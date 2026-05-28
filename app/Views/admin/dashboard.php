@@ -35,11 +35,9 @@ $deskripsiHalaman = [
     </div>
 </div>
 
-<div style="margin-bottom: 22px;">
-    <h2 style="margin: 0 0 8px; font-size: 24px;">Dashboard Admin</h2>
-    <p style="margin: 0; color: var(--text-muted); line-height: 1.6;">
-        Pilih halaman yang ingin dikelola. Setiap halaman bisa ditambah, diedit, dan dihapus konten teks atau gambarnya.
-    </p>
+<div class="section-heading">
+    <h2>Dashboard Admin</h2>
+    <p>Pilih halaman yang ingin dikelola. Setiap halaman bisa ditambah, diedit, dan dihapus konten teks atau gambarnya.</p>
 </div>
 
 <?php if (! empty($daftarHalaman)): ?>
@@ -55,7 +53,7 @@ $deskripsiHalaman = [
                     <p><?= esc($deskripsiHalaman[$kode] ?? 'Kelola konten halaman website.') ?></p>
                 </div>
 
-                <div style="margin-top: auto;">
+                <div class="card-action">
                     <a href="<?= site_url('admin/halaman/' . $kode) ?>" class="btn btn-primary">
                         Kelola Konten
                     </a>

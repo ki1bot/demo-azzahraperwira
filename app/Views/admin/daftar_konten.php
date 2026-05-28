@@ -19,12 +19,10 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
 }
 ?>
 
-<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px;">
+<div class="table-header">
     <div>
-        <h2 style="margin: 0 0 8px; font-size: 24px;">Kelola <?= esc($namaHalaman) ?></h2>
-        <p style="margin: 0; color: var(--text-muted); line-height: 1.6;">
-            Atur teks, gambar, urutan, dan status konten untuk halaman ini.
-        </p>
+        <h2>Kelola <?= esc($namaHalaman) ?></h2>
+        <p>Atur teks, gambar, urutan, dan status konten untuk halaman ini.</p>
     </div>
 
     <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
@@ -43,7 +41,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
                     <th>Gambar</th>
                     <th>Urutan</th>
                     <th>Status</th>
-                    <th style="width: 180px;">Aksi</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
 
@@ -59,7 +57,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
                         </td>
 
                         <td>
-                            <span style="color: var(--text-muted); line-height: 1.6;">
+                            <span class="table-muted">
                                 <?= esc(adminRingkasTeks($konten['isi'] ?? '-', 110)) ?>
                             </span>
                         </td>
@@ -72,7 +70,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
                                     class="image-thumb"
                                 >
                             <?php else: ?>
-                                <span style="color: var(--text-muted);">Tidak ada gambar</span>
+                                <span class="table-muted">Tidak ada gambar</span>
                             <?php endif; ?>
                         </td>
 
@@ -89,7 +87,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
                         </td>
 
                         <td>
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <div class="table-actions">
                                 <a
                                     href="<?= site_url('admin/halaman/' . $kodeHalaman . '/edit/' . ($konten['id_konten'] ?? 0)) ?>"
                                     class="btn btn-secondary"
@@ -117,7 +115,8 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
     <div class="empty-state">
         <h3>Belum ada konten</h3>
         <p>Tambahkan konten pertama untuk halaman <?= esc($namaHalaman) ?>.</p>
-        <div style="margin-top: 18px;">
+
+        <div class="empty-action">
             <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
                 Tambah Konten
             </a>

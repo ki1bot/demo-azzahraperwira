@@ -5,6 +5,7 @@ $kodeHalaman = $kodeHalaman ?? '';
 $namaHalaman = $namaHalaman ?? 'Halaman';
 
 $isEdit = $mode === 'edit' && ! empty($konten);
+
 $action = $isEdit
     ? site_url('admin/halaman/' . $kodeHalaman . '/update/' . ($konten['id_konten'] ?? 0))
     : site_url('admin/halaman/' . $kodeHalaman . '/simpan');
@@ -12,11 +13,9 @@ $action = $isEdit
 $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 ?>
 
-<div style="margin-bottom: 22px;">
-    <h2 style="margin: 0 0 8px; font-size: 24px;"><?= esc($judulForm) ?> - <?= esc($namaHalaman) ?></h2>
-    <p style="margin: 0; color: var(--text-muted); line-height: 1.6;">
-        Isi data konten dengan benar. Kode konten dipakai frontend untuk membaca data dari database.
-    </p>
+<div class="section-heading">
+    <h2><?= esc($judulForm) ?> - <?= esc($namaHalaman) ?></h2>
+    <p>Isi data konten dengan benar. Kode konten dipakai frontend untuk membaca data dari database.</p>
 </div>
 
 <form action="<?= $action ?>" method="post" enctype="multipart/form-data" class="admin-form">
@@ -75,6 +74,7 @@ $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 
         <div class="form-group">
             <label class="form-label">Preview Gambar Saat Ini</label>
+
             <?php if (! empty($konten['gambar'])): ?>
                 <img
                     src="<?= base_url($konten['gambar']) ?>"
@@ -85,7 +85,7 @@ $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
                     Upload gambar baru hanya jika ingin mengganti gambar lama.
                 </div>
             <?php else: ?>
-                <div class="empty-state" style="padding: 18px;">
+                <div class="empty-state compact">
                     <p>Belum ada gambar.</p>
                 </div>
             <?php endif; ?>
@@ -105,7 +105,9 @@ $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 
         <div class="form-group">
             <label for="status" class="form-label">Status</label>
+
             <?php $status = old('status', $konten['status'] ?? 'aktif'); ?>
+
             <select name="status" id="status" class="form-control" required>
                 <option value="aktif" <?= $status === 'aktif' ? 'selected' : '' ?>>Aktif</option>
                 <option value="nonaktif" <?= $status === 'nonaktif' ? 'selected' : '' ?>>Nonaktif</option>

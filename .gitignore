@@ -1,0 +1,59 @@
+# ENVIRONMENT / SECRET FILES
+.env
+
+# COMPOSER DEPENDENCIES
+/vendor/
+
+# CODEIGNITER 4 WRITABLE RUNTIME
+/writable/cache/*
+/writable/logs/*
+/writable/session/*
+/writable/debugbar/*
+/writable/uploads/*
+
+# Keep folder structure if .gitkeep or index.html exists
+!/writable/**/.gitkeep
+!/writable/**/index.html
+
+# DATABASE FILES / DUMP
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+
+# LOG FILES
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# NODE DEPENDENCIES / BUILD
+/node_modules/
+/dist/
+/build/
+
+# TEST / COVERAGE CACHE
+.phpunit.result.cache
+/coverage/
+
+# BACKUP / ARCHIVE FILES
+*.bak
+*.backup
+*.old
+*.tmp
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+
+# OS FILES
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# EDITOR / IDE
+.vscode/
+.idea/
+*.swp
+*.swo

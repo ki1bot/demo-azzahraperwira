@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use CodeIgniter\Model;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use CodeIgniter\Model;
 
 class ModelKontenHalaman extends Model
 {
@@ -68,7 +68,13 @@ class ModelKontenHalaman extends Model
         $hasil = [];
 
         foreach ($data as $baris) {
-            $hasil[$baris['kode_konten']] = $baris;
+            $kodeKonten = (string) ($baris['kode_konten'] ?? '');
+
+            if ($kodeKonten === '') {
+                continue;
+            }
+
+            $hasil[$kodeKonten] = $baris;
         }
 
         return $hasil;
@@ -80,6 +86,18 @@ class ModelKontenHalaman extends Model
             ->where('id_konten', $idKonten)
             ->get()
             ->getRowArray();
+    }
+
+    public function kodeSudahAda(string $kodeHalaman, string $kodeKonten, ?int $abaikanIdKonten = null): bool
+    {
+        $builder = $this->db->table($this->namaTabel($kodeHalaman))
+            ->where('kode_konten', $kodeKonten);
+
+        if ($abaikanIdKonten !== null) {
+            $builder->where('id_konten !=', $abaikanIdKonten);
+        }
+
+        return $builder->countAllResults() > 0;
     }
 
     public function tambah(string $kodeHalaman, array $data): bool

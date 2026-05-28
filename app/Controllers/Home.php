@@ -10,6 +10,8 @@ class Home extends BaseController
 
     public function __construct()
     {
+        helper('konten');
+
         $this->modelKonten = new ModelKontenHalaman();
     }
 
@@ -60,12 +62,16 @@ class Home extends BaseController
 
     private function tampilHalaman(string $statusMenu, string $viewKonten, string $kodeHalaman)
     {
+        $daftarHalaman = $this->modelKonten->daftarHalaman();
+
         $data = [
-            'title' => 'Yayasan Azzahra Perwira',
-            'statusMenu' => $statusMenu,
-            'content' => $viewKonten,
+            'title'         => 'Yayasan Azzahra Perwira',
+            'statusMenu'    => $statusMenu,
+            'content'       => $viewKonten,
+            'kodeHalaman'   => $kodeHalaman,
+            'namaHalaman'   => $daftarHalaman[$kodeHalaman] ?? 'Halaman',
             'kontenHalaman' => $this->modelKonten->semuaAktif($kodeHalaman),
-            'kontenMap' => $this->modelKonten->petaAktif($kodeHalaman),
+            'kontenMap'     => $this->modelKonten->petaAktif($kodeHalaman),
         ];
 
         return view('home/utama', $data);

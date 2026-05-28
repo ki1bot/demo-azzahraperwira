@@ -18,12 +18,12 @@ class KelolaHalaman extends BaseController
     public function dashboard()
     {
         $data = [
-            'judul' => 'Dashboard Admin',
+            'judul'         => 'Dashboard Admin',
             'daftarHalaman' => $this->modelKonten->daftarHalaman(),
         ];
 
         return view('admin/tata_letak', [
-            'judul' => $data['judul'],
+            'judul'     => $data['judul'],
             'isi_admin' => view('admin/dashboard', $data),
         ]);
     }
@@ -37,14 +37,14 @@ class KelolaHalaman extends BaseController
         }
 
         $data = [
-            'judul' => 'Kelola ' . $daftarHalaman[$kodeHalaman],
-            'kodeHalaman' => $kodeHalaman,
-            'namaHalaman' => $daftarHalaman[$kodeHalaman],
+            'judul'        => 'Kelola ' . $daftarHalaman[$kodeHalaman],
+            'kodeHalaman'  => $kodeHalaman,
+            'namaHalaman'  => $daftarHalaman[$kodeHalaman],
             'daftarKonten' => $this->modelKonten->semua($kodeHalaman),
         ];
 
         return view('admin/tata_letak', [
-            'judul' => $data['judul'],
+            'judul'     => $data['judul'],
             'isi_admin' => view('admin/daftar_konten', $data),
         ]);
     }
@@ -58,15 +58,15 @@ class KelolaHalaman extends BaseController
         }
 
         $data = [
-            'judul' => 'Tambah Konten',
-            'mode' => 'tambah',
+            'judul'       => 'Tambah Konten',
+            'mode'        => 'tambah',
             'kodeHalaman' => $kodeHalaman,
             'namaHalaman' => $daftarHalaman[$kodeHalaman],
-            'konten' => null,
+            'konten'      => null,
         ];
 
         return view('admin/tata_letak', [
-            'judul' => $data['judul'],
+            'judul'     => $data['judul'],
             'isi_admin' => view('admin/form_konten', $data),
         ]);
     }
@@ -77,16 +77,30 @@ class KelolaHalaman extends BaseController
             return redirect()->to(site_url('admin/halaman/' . $kodeHalaman));
         }
 
+        $this->pastikanHalamanAda($kodeHalaman);
+
         if (! $this->validasiFormKonten()) {
-            return redirect()->back()->withInput()->with('error', implode('<br>', $this->validator->getErrors()));
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
         if (! $this->validasiGambarOpsional()) {
-            return redirect()->back()->withInput()->with('error', implode('<br>', $this->validator->getErrors()));
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $this->validator->getErrors()));
+        }
+
+        $kodeKonten = $this->normalisasiKodeKonten();
+
+        if ($this->modelKonten->kodeSudahAda($kodeHalaman, $kodeKonten)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Kode konten "' . esc($kodeKonten) . '" sudah dipakai di halaman ini. Gunakan kode lain.');
         }
 
         $data = [
-            'kode_konten' => url_title(trim((string) $this->request->getPost('kode_konten')), '_', true),
+            'kode_konten' => $kodeKonten,
             'judul'       => trim((string) $this->request->getPost('judul')),
             'isi'         => (string) $this->request->getPost('isi'),
             'gambar'      => $this->uploadGambar(),
@@ -96,7 +110,9 @@ class KelolaHalaman extends BaseController
 
         $this->modelKonten->tambah($kodeHalaman, $data);
 
-        return redirect()->to(site_url('admin/halaman/' . $kodeHalaman))->with('success', 'Konten berhasil ditambahkan.');
+        return redirect()
+            ->to(site_url('admin/halaman/' . $kodeHalaman))
+            ->with('success', 'Konten berhasil ditambahkan. Frontend akan mengikuti data terbaru.');
     }
 
     public function edit(string $kodeHalaman, int $idKonten)
@@ -109,15 +125,15 @@ class KelolaHalaman extends BaseController
         }
 
         $data = [
-            'judul' => 'Edit Konten',
-            'mode' => 'edit',
+            'judul'       => 'Edit Konten',
+            'mode'        => 'edit',
             'kodeHalaman' => $kodeHalaman,
             'namaHalaman' => $daftarHalaman[$kodeHalaman],
-            'konten' => $konten,
+            'konten'      => $konten,
         ];
 
         return view('admin/tata_letak', [
-            'judul' => $data['judul'],
+            'judul'     => $data['judul'],
             'isi_admin' => view('admin/form_konten', $data),
         ]);
     }
@@ -128,6 +144,8 @@ class KelolaHalaman extends BaseController
             return redirect()->to(site_url('admin/halaman/' . $kodeHalaman));
         }
 
+        $this->pastikanHalamanAda($kodeHalaman);
+
         $kontenLama = $this->modelKonten->satu($kodeHalaman, $idKonten);
 
         if (! $kontenLama) {
@@ -135,17 +153,29 @@ class KelolaHalaman extends BaseController
         }
 
         if (! $this->validasiFormKonten()) {
-            return redirect()->back()->withInput()->with('error', implode('<br>', $this->validator->getErrors()));
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
         if (! $this->validasiGambarOpsional()) {
-            return redirect()->back()->withInput()->with('error', implode('<br>', $this->validator->getErrors()));
+            return redirect()->back()
+                ->withInput()
+                ->with('error', implode('<br>', $this->validator->getErrors()));
+        }
+
+        $kodeKonten = $this->normalisasiKodeKonten();
+
+        if ($this->modelKonten->kodeSudahAda($kodeHalaman, $kodeKonten, $idKonten)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Kode konten "' . esc($kodeKonten) . '" sudah dipakai di halaman ini. Gunakan kode lain.');
         }
 
         $gambarBaru = $this->uploadGambar();
 
         $data = [
-            'kode_konten' => url_title(trim((string) $this->request->getPost('kode_konten')), '_', true),
+            'kode_konten' => $kodeKonten,
             'judul'       => trim((string) $this->request->getPost('judul')),
             'isi'         => (string) $this->request->getPost('isi'),
             'urutan'      => (int) $this->request->getPost('urutan'),
@@ -159,7 +189,9 @@ class KelolaHalaman extends BaseController
 
         $this->modelKonten->ubah($kodeHalaman, $idKonten, $data);
 
-        return redirect()->to(site_url('admin/halaman/' . $kodeHalaman))->with('success', 'Konten berhasil diperbarui.');
+        return redirect()
+            ->to(site_url('admin/halaman/' . $kodeHalaman))
+            ->with('success', 'Konten berhasil diperbarui. Frontend akan mengikuti data terbaru.');
     }
 
     public function hapus(string $kodeHalaman, int $idKonten)
@@ -167,6 +199,8 @@ class KelolaHalaman extends BaseController
         if (strtolower($this->request->getMethod()) !== 'post') {
             return redirect()->to(site_url('admin/halaman/' . $kodeHalaman));
         }
+
+        $this->pastikanHalamanAda($kodeHalaman);
 
         $konten = $this->modelKonten->satu($kodeHalaman, $idKonten);
 
@@ -177,7 +211,18 @@ class KelolaHalaman extends BaseController
         $this->modelKonten->hapus($kodeHalaman, $idKonten);
         $this->hapusFileGambar($konten['gambar'] ?? null);
 
-        return redirect()->to(site_url('admin/halaman/' . $kodeHalaman))->with('success', 'Konten berhasil dihapus.');
+        return redirect()
+            ->to(site_url('admin/halaman/' . $kodeHalaman))
+            ->with('success', 'Konten berhasil dihapus. Frontend akan mengikuti data terbaru.');
+    }
+
+    private function pastikanHalamanAda(string $kodeHalaman): void
+    {
+        $daftarHalaman = $this->modelKonten->daftarHalaman();
+
+        if (! isset($daftarHalaman[$kodeHalaman])) {
+            throw PageNotFoundException::forPageNotFound('Halaman tidak ditemukan.');
+        }
     }
 
     private function validasiFormKonten(): bool
@@ -204,6 +249,11 @@ class KelolaHalaman extends BaseController
         ]);
     }
 
+    private function normalisasiKodeKonten(): string
+    {
+        return url_title(trim((string) $this->request->getPost('kode_konten')), '_', true);
+    }
+
     private function uploadGambar(): ?string
     {
         $file = $this->request->getFile('gambar');
@@ -226,7 +276,13 @@ class KelolaHalaman extends BaseController
 
     private function hapusFileGambar(?string $path): void
     {
-        if (! $path) {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return;
+        }
+
+        if (! str_starts_with($path, 'uploads/halaman/')) {
             return;
         }
 

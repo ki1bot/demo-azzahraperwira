@@ -20,8 +20,8 @@ $deskripsiHalaman = [
     </div>
 
     <div class="stat-card">
-        <span>Mode Admin</span>
-        <strong>CMS</strong>
+        <span>Status</span>
+        <strong>Admin</strong>
     </div>
 
     <div class="stat-card">

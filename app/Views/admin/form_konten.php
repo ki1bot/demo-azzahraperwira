@@ -31,9 +31,6 @@ $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
                 placeholder="Contoh: hero, tentang_singkat, galeri_1"
                 required
             >
-            <div class="form-help">
-                Kode ini dipakai frontend untuk mengambil konten. Jangan asal ganti kalau sudah dipakai di view.
-            </div>
         </div>
 
         <div class="form-group">

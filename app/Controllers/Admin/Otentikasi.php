@@ -71,6 +71,99 @@ class Otentikasi extends BaseController
         return redirect()->to(site_url('admin/dashboard'));
     }
 
+    public function ubahPassword()
+    {
+        return view('admin/tata_letak', [
+            'judul'     => 'Ubah Password',
+            'isi_admin' => view('admin/ubah_password', [
+                'judul' => 'Ubah Password',
+            ]),
+        ]);
+    }
+
+    public function prosesUbahPassword()
+    {
+        if (strtolower($this->request->getMethod()) !== 'post') {
+            return redirect()->to(site_url('admin/ubah-password'));
+        }
+
+        $aturan = [
+            'password_lama' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Password lama wajib diisi.',
+                ],
+            ],
+            'password_baru' => [
+                'rules' => 'required|min_length[8]',
+                'errors' => [
+                    'required'   => 'Password baru wajib diisi.',
+                    'min_length' => 'Password baru minimal 8 karakter.',
+                ],
+            ],
+            'konfirmasi_password' => [
+                'rules' => 'required|matches[password_baru]',
+                'errors' => [
+                    'required' => 'Konfirmasi password wajib diisi.',
+                    'matches'  => 'Konfirmasi password tidak sama dengan password baru.',
+                ],
+            ],
+        ];
+
+        if (! $this->validate($aturan)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', implode('<br>', $this->validator->getErrors()));
+        }
+
+        $idAdmin = (int) session()->get('id_admin');
+
+        if ($idAdmin <= 0) {
+            session()->destroy();
+
+            return redirect()
+                ->to(site_url('admin/login'))
+                ->with('error', 'Sesi admin tidak valid. Silakan login ulang.');
+        }
+
+        $modelAdmin = new ModelAdminPengguna();
+        $admin = $modelAdmin->ambilBerdasarkanId($idAdmin);
+
+        if (! $admin) {
+            session()->destroy();
+
+            return redirect()
+                ->to(site_url('admin/login'))
+                ->with('error', 'Akun admin tidak ditemukan atau sudah tidak aktif.');
+        }
+
+        $passwordLama = (string) $this->request->getPost('password_lama');
+        $passwordBaru = (string) $this->request->getPost('password_baru');
+
+        if (! password_verify($passwordLama, $admin['password'])) {
+            return redirect()
+                ->back()
+                ->with('error', 'Password lama salah.');
+        }
+
+        if (password_verify($passwordBaru, $admin['password'])) {
+            return redirect()
+                ->back()
+                ->with('error', 'Password baru tidak boleh sama dengan password lama.');
+        }
+
+        $hashPasswordBaru = password_hash($passwordBaru, PASSWORD_DEFAULT);
+
+        $modelAdmin->ubahPassword($idAdmin, $hashPasswordBaru);
+
+        session()->regenerate(true);
+
+        return redirect()
+            ->to(site_url('admin/ubah-password'))
+            ->with('success', 'Password admin berhasil diubah.');
+    }
+
     public function logout()
     {
         session()->remove([

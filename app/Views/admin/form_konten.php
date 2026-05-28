@@ -1,75 +1,125 @@
 <?php
 $mode = $mode ?? 'tambah';
+$konten = $konten ?? null;
 $kodeHalaman = $kodeHalaman ?? '';
 $namaHalaman = $namaHalaman ?? 'Halaman';
-$konten = $konten ?? null;
 
-$aksi = $mode === 'edit' && ! empty($konten['id_konten'])
-    ? site_url('admin/halaman/' . $kodeHalaman . '/update/' . $konten['id_konten'])
+$isEdit = $mode === 'edit' && ! empty($konten);
+$action = $isEdit
+    ? site_url('admin/halaman/' . $kodeHalaman . '/update/' . ($konten['id_konten'] ?? 0))
     : site_url('admin/halaman/' . $kodeHalaman . '/simpan');
+
+$judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 ?>
 
-<div class="kartu">
-    <h2>
-        <?= $mode === 'edit' ? 'Edit Konten' : 'Tambah Konten' ?> -
-        <?= esc($namaHalaman) ?>
-    </h2>
+<div style="margin-bottom: 22px;">
+    <h2 style="margin: 0 0 8px; font-size: 24px;"><?= esc($judulForm) ?> - <?= esc($namaHalaman) ?></h2>
+    <p style="margin: 0; color: var(--text-muted); line-height: 1.6;">
+        Isi data konten dengan benar. Kode konten dipakai frontend untuk membaca data dari database.
+    </p>
+</div>
 
-    <form action="<?= $aksi ?>" method="post" enctype="multipart/form-data">
-        <?= csrf_field() ?>
-
-        <div class="grup-form">
-            <label>Kode Konten</label>
-            <input type="text" name="kode_konten" value="<?= old('kode_konten', $konten['kode_konten'] ?? '') ?>"
-                placeholder="contoh: hero, profil_yayasan, visi_misi" required>
-            <div class="teks-kecil">
+<form action="<?= $action ?>" method="post" enctype="multipart/form-data" class="admin-form">
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="kode_konten" class="form-label">Kode Konten</label>
+            <input
+                type="text"
+                name="kode_konten"
+                id="kode_konten"
+                class="form-control"
+                value="<?= esc(old('kode_konten', $konten['kode_konten'] ?? '')) ?>"
+                placeholder="Contoh: hero, tentang_singkat, galeri_1"
+                required
+            >
+            <div class="form-help">
                 Kode ini dipakai frontend untuk mengambil konten. Jangan asal ganti kalau sudah dipakai di view.
             </div>
         </div>
 
-        <div class="grup-form">
-            <label>Judul</label>
-            <input type="text" name="judul" value="<?= old('judul', $konten['judul'] ?? '') ?>">
+        <div class="form-group">
+            <label for="judul" class="form-label">Judul</label>
+            <input
+                type="text"
+                name="judul"
+                id="judul"
+                class="form-control"
+                value="<?= esc(old('judul', $konten['judul'] ?? '')) ?>"
+                placeholder="Masukkan judul konten"
+            >
         </div>
 
-        <div class="grup-form">
-            <label>Isi</label>
-            <textarea name="isi"><?= old('isi', $konten['isi'] ?? '') ?></textarea>
+        <div class="form-group full">
+            <label for="isi" class="form-label">Isi</label>
+            <textarea
+                name="isi"
+                id="isi"
+                class="form-control"
+                placeholder="Masukkan isi konten"
+            ><?= esc(old('isi', $konten['isi'] ?? '')) ?></textarea>
         </div>
 
-        <div class="grup-form">
-            <label>Gambar</label>
-            <input type="file" name="gambar" accept="image/png,image/jpeg,image/jpg,image/webp">
-            <div class="teks-kecil">Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.</div>
+        <div class="form-group">
+            <label for="gambar" class="form-label">Gambar</label>
+            <input
+                type="file"
+                name="gambar"
+                id="gambar"
+                class="form-control"
+                accept="image/jpeg,image/png,image/webp"
+            >
+            <div class="form-help">
+                Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.
+            </div>
+        </div>
 
+        <div class="form-group">
+            <label class="form-label">Preview Gambar Saat Ini</label>
             <?php if (! empty($konten['gambar'])): ?>
-            <p>Gambar saat ini:</p>
-            <img class="pratinjau" src="<?= base_url($konten['gambar']) ?>"
-                alt="<?= esc($konten['judul'] ?? 'Gambar') ?>">
+                <img
+                    src="<?= base_url($konten['gambar']) ?>"
+                    alt="<?= esc($konten['judul'] ?? 'Gambar konten') ?>"
+                    class="preview-img"
+                >
+                <div class="form-help">
+                    Upload gambar baru hanya jika ingin mengganti gambar lama.
+                </div>
+            <?php else: ?>
+                <div class="empty-state" style="padding: 18px;">
+                    <p>Belum ada gambar.</p>
+                </div>
             <?php endif; ?>
         </div>
 
-        <div class="grup-form">
-            <label>Urutan</label>
-            <input type="number" name="urutan" value="<?= old('urutan', $konten['urutan'] ?? 0) ?>">
+        <div class="form-group">
+            <label for="urutan" class="form-label">Urutan</label>
+            <input
+                type="number"
+                name="urutan"
+                id="urutan"
+                class="form-control"
+                value="<?= esc(old('urutan', $konten['urutan'] ?? 0)) ?>"
+                min="0"
+            >
         </div>
 
-        <div class="grup-form">
-            <label>Status</label>
-            <?php $statusSekarang = old('status', $konten['status'] ?? 'aktif'); ?>
-
-            <select name="status">
-                <option value="aktif" <?=$statusSekarang==='aktif' ? 'selected' : '' ?>>Aktif</option>
-                <option value="nonaktif" <?=$statusSekarang==='nonaktif' ? 'selected' : '' ?>>Nonaktif</option>
+        <div class="form-group">
+            <label for="status" class="form-label">Status</label>
+            <?php $status = old('status', $konten['status'] ?? 'aktif'); ?>
+            <select name="status" id="status" class="form-control" required>
+                <option value="aktif" <?= $status === 'aktif' ? 'selected' : '' ?>>Aktif</option>
+                <option value="nonaktif" <?= $status === 'nonaktif' ? 'selected' : '' ?>>Nonaktif</option>
             </select>
         </div>
+    </div>
 
-        <button class="tombol tombol-utama" type="submit">
-            Simpan
-        </button>
-
-        <a class="tombol tombol-kedua" href="<?= site_url('admin/halaman/' . $kodeHalaman) ?>">
+    <div class="form-actions">
+        <a href="<?= site_url('admin/halaman/' . $kodeHalaman) ?>" class="btn btn-secondary">
             Kembali
         </a>
-    </form>
-</div>
+
+        <button type="submit" class="btn btn-primary">
+            Simpan
+        </button>
+    </div>
+</form>

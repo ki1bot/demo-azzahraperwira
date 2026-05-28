@@ -1,12 +1,10 @@
 <?php
 
-namespace Config;
+use CodeIgniter\Router\RouteCollection;
 
-$routes = Services::routes();
-
-if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
-    require SYSTEMPATH . 'Config/Routes.php';
-}
+/**
+ * @var RouteCollection $routes
+ */
 
 $routes->setDefaultNamespace('App\Controllers');
 $routes->setDefaultController('Home');
@@ -16,7 +14,6 @@ $routes->set404Override();
 $routes->setAutoRoute(false);
 
 $routes->get('/', 'Home::index');
-
 $routes->get('home', 'Home::index');
 $routes->get('home/beranda', 'Home::beranda');
 $routes->get('home/profile', 'Home::profile');
@@ -46,13 +43,14 @@ $routes->group('admin', ['filter' => 'filteradmin'], static function ($routes) {
     $routes->get('/', 'Admin\KelolaHalaman::dashboard');
     $routes->get('dashboard', 'Admin\KelolaHalaman::dashboard');
 
+    $routes->get('ubah-password', 'Admin\Otentikasi::ubahPassword');
+    $routes->post('ubah-password', 'Admin\Otentikasi::prosesUbahPassword');
+
     $routes->get('halaman/(:segment)', 'Admin\KelolaHalaman::index/$1');
     $routes->get('halaman/(:segment)/tambah', 'Admin\KelolaHalaman::tambah/$1');
     $routes->post('halaman/(:segment)/simpan', 'Admin\KelolaHalaman::simpan/$1');
-
     $routes->get('halaman/(:segment)/edit/(:num)', 'Admin\KelolaHalaman::edit/$1/$2');
     $routes->post('halaman/(:segment)/update/(:num)', 'Admin\KelolaHalaman::update/$1/$2');
-
     $routes->post('halaman/(:segment)/hapus/(:num)', 'Admin\KelolaHalaman::hapus/$1/$2');
 });
 
@@ -64,13 +62,14 @@ $routes->group('index.php/admin', ['filter' => 'filteradmin'], static function (
     $routes->get('/', 'Admin\KelolaHalaman::dashboard');
     $routes->get('dashboard', 'Admin\KelolaHalaman::dashboard');
 
+    $routes->get('ubah-password', 'Admin\Otentikasi::ubahPassword');
+    $routes->post('ubah-password', 'Admin\Otentikasi::prosesUbahPassword');
+
     $routes->get('halaman/(:segment)', 'Admin\KelolaHalaman::index/$1');
     $routes->get('halaman/(:segment)/tambah', 'Admin\KelolaHalaman::tambah/$1');
     $routes->post('halaman/(:segment)/simpan', 'Admin\KelolaHalaman::simpan/$1');
-
     $routes->get('halaman/(:segment)/edit/(:num)', 'Admin\KelolaHalaman::edit/$1/$2');
     $routes->post('halaman/(:segment)/update/(:num)', 'Admin\KelolaHalaman::update/$1/$2');
-
     $routes->post('halaman/(:segment)/hapus/(:num)', 'Admin\KelolaHalaman::hapus/$1/$2');
 });
 

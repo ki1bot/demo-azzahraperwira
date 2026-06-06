@@ -44,12 +44,12 @@ class KelolaHalaman extends BaseController
         }
 
         $data = [
-            'judul'          => 'Kelola ' . $daftarHalaman[$kodeHalaman],
-            'kodeHalaman'    => $kodeHalaman,
-            'namaHalaman'    => $daftarHalaman[$kodeHalaman],
-            'daftarKonten'   => $this->modelKonten->semua($kodeHalaman),
-            'bolehTambah'    => $this->bolehTambahKonten($kodeHalaman),
-            'halamanTetap'   => ! $this->bolehTambahKonten($kodeHalaman),
+            'judul'        => 'Kelola ' . $daftarHalaman[$kodeHalaman],
+            'kodeHalaman'  => $kodeHalaman,
+            'namaHalaman'  => $daftarHalaman[$kodeHalaman],
+            'daftarKonten' => $this->modelKonten->semua($kodeHalaman),
+            'bolehTambah'  => $this->bolehTambahKonten($kodeHalaman),
+            'halamanTetap' => ! $this->bolehTambahKonten($kodeHalaman),
         ];
 
         return view('admin/tata_letak', [
@@ -68,7 +68,7 @@ class KelolaHalaman extends BaseController
 
         if (! $this->bolehTambahKonten($kodeHalaman)) {
             return redirect()
-                ->to(site_url('admin/halaman/' . $kodeHalaman))
+                ->to($this->adminUrl($kodeHalaman))
                 ->with('error', 'Halaman ' . $daftarHalaman[$kodeHalaman] . ' hanya boleh diedit. Tidak boleh menambahkan konten baru.');
         }
 
@@ -91,14 +91,14 @@ class KelolaHalaman extends BaseController
     public function simpan(string $kodeHalaman)
     {
         if (strtolower($this->request->getMethod()) !== 'post') {
-            return redirect()->to(site_url('admin/halaman/' . $kodeHalaman));
+            return redirect()->to($this->adminUrl($kodeHalaman));
         }
 
         $this->pastikanHalamanAda($kodeHalaman);
 
         if (! $this->bolehTambahKonten($kodeHalaman)) {
             return redirect()
-                ->to(site_url('admin/halaman/' . $kodeHalaman))
+                ->to($this->adminUrl($kodeHalaman))
                 ->with('error', 'Halaman ini tidak boleh menambahkan data baru. Gunakan tombol Edit pada konten yang sudah tersedia.');
         }
 
@@ -134,7 +134,7 @@ class KelolaHalaman extends BaseController
         $this->modelKonten->tambah($kodeHalaman, $data);
 
         return redirect()
-            ->to(site_url('admin/halaman/' . $kodeHalaman))
+            ->to($this->adminUrl($kodeHalaman))
             ->with('success', 'Konten berhasil ditambahkan. Frontend akan mengikuti data terbaru.');
     }
 
@@ -166,7 +166,7 @@ class KelolaHalaman extends BaseController
     public function update(string $kodeHalaman, int $idKonten)
     {
         if (strtolower($this->request->getMethod()) !== 'post') {
-            return redirect()->to(site_url('admin/halaman/' . $kodeHalaman));
+            return redirect()->to($this->adminUrl($kodeHalaman));
         }
 
         $this->pastikanHalamanAda($kodeHalaman);
@@ -217,21 +217,21 @@ class KelolaHalaman extends BaseController
         $this->modelKonten->ubah($kodeHalaman, $idKonten, $data);
 
         return redirect()
-            ->to(site_url('admin/halaman/' . $kodeHalaman))
+            ->to($this->adminUrl($kodeHalaman))
             ->with('success', 'Konten berhasil diperbarui. Frontend akan mengikuti data terbaru.');
     }
 
     public function hapus(string $kodeHalaman, int $idKonten)
     {
         if (strtolower($this->request->getMethod()) !== 'post') {
-            return redirect()->to(site_url('admin/halaman/' . $kodeHalaman));
+            return redirect()->to($this->adminUrl($kodeHalaman));
         }
 
         $this->pastikanHalamanAda($kodeHalaman);
 
         if (! $this->bolehTambahKonten($kodeHalaman)) {
             return redirect()
-                ->to(site_url('admin/halaman/' . $kodeHalaman))
+                ->to($this->adminUrl($kodeHalaman))
                 ->with('error', 'Konten halaman ini tidak boleh dihapus. Halaman ini hanya boleh diedit.');
         }
 
@@ -245,8 +245,13 @@ class KelolaHalaman extends BaseController
         $this->hapusFileGambar($konten['gambar'] ?? null);
 
         return redirect()
-            ->to(site_url('admin/halaman/' . $kodeHalaman))
+            ->to($this->adminUrl($kodeHalaman))
             ->with('success', 'Konten berhasil dihapus. Frontend akan mengikuti data terbaru.');
+    }
+
+    private function adminUrl(string $kodeHalaman): string
+    {
+        return base_url('admin/' . $kodeHalaman . '/index.php');
     }
 
     private function bolehTambahKonten(string $kodeHalaman): bool

@@ -50,7 +50,7 @@
                 </div>
             <?php endif; ?>
 
-            <form action="<?= site_url('admin/login') ?>" method="post" class="form" autocomplete="off">
+            <form action="<?= base_url('admin/login/index.php') ?>" method="post" class="form" autocomplete="off">
                 <div class="form-group">
                     <label for="username">Username</label>
 

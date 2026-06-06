@@ -8,6 +8,17 @@ function adminAktif(string $kataKunci, string $uriString): string
 {
     return str_contains($uriString, $kataKunci) ? 'active' : '';
 }
+
+function adminUrl(string $path = ''): string
+{
+    $path = trim($path, '/');
+
+    if ($path === '') {
+        return base_url('admin/dashboard/index.php');
+    }
+
+    return base_url('admin/' . $path . '/index.php');
+}
 ?>
 
 <!DOCTYPE html>
@@ -42,52 +53,52 @@ function adminAktif(string $kataKunci, string $uriString): string
             <div class="nav-label">Menu Utama</div>
 
             <nav class="admin-nav">
-                <a href="<?= site_url('admin/dashboard') ?>" class="<?= adminAktif('admin/dashboard', $uriString) ?>">
+                <a href="<?= adminUrl('dashboard') ?>" class="<?= adminAktif('admin/dashboard', $uriString) ?>">
                     <span class="nav-icon">⌂</span>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="<?= site_url('admin/beranda') ?>" class="<?= adminAktif('admin/beranda', $uriString) ?>">
+                <a href="<?= adminUrl('beranda') ?>" class="<?= adminAktif('admin/beranda', $uriString) ?>">
                     <span class="nav-icon">H</span>
                     <span>Beranda</span>
                 </a>
 
-                <a href="<?= site_url('admin/profile') ?>" class="<?= adminAktif('admin/profile', $uriString) ?>">
+                <a href="<?= adminUrl('profile') ?>" class="<?= adminAktif('admin/profile', $uriString) ?>">
                     <span class="nav-icon">P</span>
                     <span>Profile</span>
                 </a>
 
-                <a href="<?= site_url('admin/tenaga-pengajar') ?>" class="<?= adminAktif('admin/tenaga-pengajar', $uriString) ?>">
+                <a href="<?= adminUrl('tenaga-pengajar') ?>" class="<?= adminAktif('admin/tenaga-pengajar', $uriString) ?>">
                     <span class="nav-icon">G</span>
                     <span>Tenaga Pengajar</span>
                 </a>
 
-                <a href="<?= site_url('admin/unit-kb-tk') ?>" class="<?= adminAktif('admin/unit-kb-tk', $uriString) ?>">
+                <a href="<?= adminUrl('unit-kb-tk') ?>" class="<?= adminAktif('admin/unit-kb-tk', $uriString) ?>">
                     <span class="nav-icon">K</span>
                     <span>Unit KB/TK</span>
                 </a>
 
-                <a href="<?= site_url('admin/unit-tpq') ?>" class="<?= adminAktif('admin/unit-tpq', $uriString) ?>">
+                <a href="<?= adminUrl('unit-tpq') ?>" class="<?= adminAktif('admin/unit-tpq', $uriString) ?>">
                     <span class="nav-icon">T</span>
                     <span>Unit TPQ</span>
                 </a>
 
-                <a href="<?= site_url('admin/unit-dc') ?>" class="<?= adminAktif('admin/unit-dc', $uriString) ?>">
+                <a href="<?= adminUrl('unit-dc') ?>" class="<?= adminAktif('admin/unit-dc', $uriString) ?>">
                     <span class="nav-icon">D</span>
                     <span>Unit Daycare</span>
                 </a>
 
-                <a href="<?= site_url('admin/unit-lansia') ?>" class="<?= adminAktif('unit-lansia', $uriString) ?>">
+                <a href="<?= adminUrl('unit-lansia') ?>" class="<?= adminAktif('admin/unit-lansia', $uriString) ?>">
                     <span class="nav-icon">L</span>
                     <span>Unit Lansia</span>
                 </a>
 
-                <a href="<?= site_url('admin/informasi') ?>" class="<?= adminAktif('halaman/informasi', $uriString) ?>">
+                <a href="<?= adminUrl('informasi') ?>" class="<?= adminAktif('admin/informasi', $uriString) ?>">
                     <span class="nav-icon">I</span>
                     <span>Informasi</span>
                 </a>
 
-                <a href="<?= site_url('admin/footer') ?>" class="<?= adminAktif('halaman/footer', $uriString) ?>">
+                <a href="<?= adminUrl('footer') ?>" class="<?= adminAktif('admin/footer', $uriString) ?>">
                     <span class="nav-icon">F</span>
                     <span>Footer</span>
                 </a>
@@ -140,11 +151,11 @@ function adminAktif(string $kataKunci, string $uriString): string
                             </div>
 
                             <div class="admin-profile-menu">
-                                <a href="<?= site_url('admin/ubah-password') ?>">
+                                <a href="<?= adminUrl('ubah-password') ?>">
                                     Ubah Password
                                 </a>
 
-                                <a href="<?= site_url('admin/logout') ?>" class="danger">
+                                <a href="<?= base_url('admin/logout/index.php') ?>" class="danger">
                                     Logout
                                 </a>
                             </div>

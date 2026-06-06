@@ -7,9 +7,25 @@ $halamanTetap = (bool) ($halamanTetap ?? false);
 
 $isEdit = $mode === 'edit' && ! empty($konten);
 
+$adminFormUrl = static function (string $kodeHalaman, string $aksi, ?int $idKonten = null): string {
+    $url = 'admin/' . trim($kodeHalaman, '/') . '/' . trim($aksi, '/');
+
+    if ($idKonten !== null) {
+        $url .= '/' . $idKonten;
+    }
+
+    $url .= '/index.php';
+
+    return base_url($url);
+};
+
+$adminIndexUrl = static function (string $kodeHalaman): string {
+    return base_url('admin/' . trim($kodeHalaman, '/') . '/index.php');
+};
+
 $action = $isEdit
-    ? site_url('admin/' . $kodeHalaman . '/update/' . ($konten['id_konten'] ?? 0))
-    : site_url('admin/' . $kodeHalaman . '/simpan');
+    ? $adminFormUrl($kodeHalaman, 'update', (int) ($konten['id_konten'] ?? 0))
+    : $adminFormUrl($kodeHalaman, 'simpan');
 
 $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
@@ -151,7 +167,7 @@ $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
     </div>
 
     <div class="form-actions">
-        <a href="<?= site_url('admin/' . $kodeHalaman) ?>" class="btn btn-secondary">
+        <a href="<?= $adminIndexUrl($kodeHalaman) ?>" class="btn btn-secondary">
             Kembali
         </a>
 

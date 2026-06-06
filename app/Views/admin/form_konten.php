@@ -8,22 +8,20 @@ $halamanTetap = (bool) ($halamanTetap ?? false);
 $isEdit = $mode === 'edit' && ! empty($konten);
 
 $adminFormUrl = static function (string $kodeHalaman, string $aksi, ?int $idKonten = null): string {
-    $url = 'admin/' . trim($kodeHalaman, '/') . '/' . trim($aksi, '/');
+    $url = 'admin/halaman/' . trim($kodeHalaman, '/') . '/' . trim($aksi, '/');
 
     if ($idKonten !== null) {
         $url .= '/' . $idKonten;
     }
 
-    $url .= '/index.php';
-
-    return base_url($url);
+    return base_url($url . '/index.php');
 };
 
 $adminIndexUrl = static function (string $kodeHalaman): string {
-    return base_url('admin/' . trim($kodeHalaman, '/') . '/index.php');
+    return base_url('admin/halaman/' . trim($kodeHalaman, '/') . '/index.php');
 };
 
-$action = $isEdit
+$$action = $isEdit
     ? $adminFormUrl($kodeHalaman, 'update', (int) ($konten['id_konten'] ?? 0))
     : $adminFormUrl($kodeHalaman, 'simpan');
 

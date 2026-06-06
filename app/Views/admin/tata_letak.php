@@ -53,52 +53,52 @@ function adminUrl(string $path = ''): string
             <div class="nav-label">Menu Utama</div>
 
             <nav class="admin-nav">
-                <a href="<?= adminUrl('admin/dashboard/index.php') ?>" class="<?= adminAktif('admin/dashboard', $uriString) ?>">
+                <a href="<?= base_url('admin/dashboard/index.php') ?>" class="<?= adminAktif('admin/dashboard', $uriString) ?>">
                     <span class="nav-icon">⌂</span>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="<?= adminUrl('admin/halaman/beranda/index.php') ?>" class="<?= adminAktif('admin/beranda', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/beranda/index.php') ?>" class="<?= adminAktif('admin/halaman/beranda', $uriString) ?>">
                     <span class="nav-icon">H</span>
                     <span>Beranda</span>
                 </a>
 
-                <a href="<?= adminUrl('admin/halaman/profile/index.php') ?>" class="<?= adminAktif('admin/profile', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/profile/index.php') ?>" class="<?= adminAktif('admin/halaman/profile', $uriString) ?>">
                     <span class="nav-icon">P</span>
                     <span>Profile</span>
                 </a>
 
-                <a href="<?= adminUrl('admin/halaman/tenaga-pengajar/index.php') ?>" class="<?= adminAktif('admin/tenaga-pengajar', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/tenaga-pengajar/index.php') ?>" class="<?= adminAktif('admin/halaman/tenaga-pengajar', $uriString) ?>">
                     <span class="nav-icon">G</span>
                     <span>Tenaga Pengajar</span>
                 </a>
 
-                <a href="<?= adminUrl('unit-kb-tk') ?>" class="<?= adminAktif('admin/unit-kb-tk', $uriString) ?>">
+               <a href="<?= base_url('admin/halaman/unit-kb-tk/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-kb-tk', $uriString) ?>">
                     <span class="nav-icon">K</span>
                     <span>Unit KB/TK</span>
                 </a>
 
-                <a href="<?= adminUrl('unit-tpq') ?>" class="<?= adminAktif('admin/unit-tpq', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/unit-tpq/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-tpq', $uriString) ?>">
                     <span class="nav-icon">T</span>
                     <span>Unit TPQ</span>
                 </a>
 
-                <a href="<?= adminUrl('unit-dc') ?>" class="<?= adminAktif('admin/unit-dc', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/unit-dc/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-dc', $uriString) ?>">
                     <span class="nav-icon">D</span>
                     <span>Unit Daycare</span>
                 </a>
 
-                <a href="<?= adminUrl('unit-lansia') ?>" class="<?= adminAktif('admin/unit-lansia', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/unit-lansia/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-lansia', $uriString) ?>">
                     <span class="nav-icon">L</span>
                     <span>Unit Lansia</span>
                 </a>
 
-                <a href="<?= adminUrl('informasi') ?>" class="<?= adminAktif('admin/informasi', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/informasi/index.php') ?>" class="<?= adminAktif('admin/halaman/informasi', $uriString) ?>">
                     <span class="nav-icon">I</span>
                     <span>Informasi</span>
                 </a>
 
-                <a href="<?= adminUrl('footer') ?>" class="<?= adminAktif('admin/footer', $uriString) ?>">
+                <a href="<?= base_url('admin/halaman/footer/index.php') ?>" class="<?= adminAktif('admin/halaman/footer', $uriString) ?>">
                     <span class="nav-icon">F</span>
                     <span>Footer</span>
                 </a>
@@ -151,7 +151,7 @@ function adminUrl(string $path = ''): string
                             </div>
 
                             <div class="admin-profile-menu">
-                                <a href="<?= adminUrl('ubah-password') ?>">
+                                <a href="<?= base_url('admin/ubah-password/index.php') ?>">
                                     Ubah Password
                                 </a>
 

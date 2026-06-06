@@ -5,22 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($judul ?? 'Login Admin') ?></title>
 
-    <script>
-        (function () {
-            const tema = localStorage.getItem('tema-admin-yayasan') || 'light';
-            document.documentElement.setAttribute('data-admin-theme', tema);
-        })();
-    </script>
+    <script src="<?= base_url('js/admin.js') ?>"></script>
 
     <link rel="stylesheet" href="<?= base_url('assets/css/admin.css') ?>">
 </head>
+
 <body class="login-body" style="--login-bg-image: url('<?= base_url('assets/img/home/home.jpg') ?>');">
-    <button type="button" class="theme-toggle" id="themeToggle">Tema</button>
+    <button type="button" class="theme-toggle" id="themeToggle">
+        Tema
+    </button>
 
     <main class="login-shell">
         <section class="login-hero">
             <div class="login-brand">
                 <div class="login-logo">AZ</div>
+
                 <div>
                     <h1>Az-Zahra Perwira</h1>
                     <p>Panel Backend Admin</p>
@@ -54,6 +53,7 @@
             <form action="<?= site_url('admin/login') ?>" method="post" class="form" autocomplete="off">
                 <div class="form-group">
                     <label for="username">Username</label>
+
                     <input
                         type="text"
                         name="username"
@@ -89,43 +89,11 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Masuk</button>
+                <button type="submit" class="btn btn-primary">
+                    Masuk
+                </button>
             </form>
         </section>
     </main>
-
-    <script>
-        const html = document.documentElement;
-        const tombolTema = document.getElementById('themeToggle');
-
-        function setTemaAdmin(tema) {
-            html.setAttribute('data-admin-theme', tema);
-            localStorage.setItem('tema-admin-yayasan', tema);
-            tombolTema.textContent = tema === 'dark' ? 'Tema Gelap' : 'Tema Terang';
-        }
-
-        setTemaAdmin(localStorage.getItem('tema-admin-yayasan') || 'light');
-
-        tombolTema.addEventListener('click', function () {
-            const temaAktif = html.getAttribute('data-admin-theme') === 'dark' ? 'light' : 'dark';
-            setTemaAdmin(temaAktif);
-        });
-
-        document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
-            button.addEventListener('click', function () {
-                const inputId = button.getAttribute('data-toggle-password');
-                const input = document.getElementById(inputId);
-
-                if (! input) {
-                    return;
-                }
-
-                const sedangPassword = input.getAttribute('type') === 'password';
-                input.setAttribute('type', sedangPassword ? 'text' : 'password');
-                button.textContent = sedangPassword ? 'Tutup' : 'Lihat';
-                button.setAttribute('aria-label', sedangPassword ? 'Sembunyikan password' : 'Tampilkan password');
-            });
-        });
-    </script>
 </body>
 </html>

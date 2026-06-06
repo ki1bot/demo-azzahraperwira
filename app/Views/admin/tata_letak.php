@@ -17,12 +17,7 @@ function adminAktif(string $kataKunci, string $uriString): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($judulHalaman) ?> - Admin Yayasan</title>
 
-    <script>
-        (function () {
-            const tema = localStorage.getItem('tema-admin-yayasan') || 'light';
-            document.documentElement.setAttribute('data-admin-theme', tema);
-        })();
-    </script>
+    <script src="<?= base_url('js/admin.js') ?>"></script>
 
     <link rel="stylesheet" href="<?= base_url('assets/css/admin.css') ?>">
 </head>
@@ -170,73 +165,5 @@ function adminAktif(string $kataKunci, string $uriString): string
             </section>
         </main>
     </div>
-
-    <script>
-        const html = document.documentElement;
-
-        const tombolTema = document.getElementById('themeToggle');
-        const teksTema = document.getElementById('themeText');
-        const ikonTema = document.getElementById('themeIcon');
-
-        const adminProfileButton = document.getElementById('adminProfileButton');
-        const adminProfileDropdown = document.getElementById('adminProfileDropdown');
-
-        function setTemaAdmin(tema) {
-            html.setAttribute('data-admin-theme', tema);
-            localStorage.setItem('tema-admin-yayasan', tema);
-
-            if (tema === 'dark') {
-                teksTema.textContent = 'Tema Gelap';
-                ikonTema.textContent = '☾';
-            } else {
-                teksTema.textContent = 'Tema Terang';
-                ikonTema.textContent = '☀';
-            }
-        }
-
-        setTemaAdmin(localStorage.getItem('tema-admin-yayasan') || 'light');
-
-        tombolTema.addEventListener('click', function () {
-            const temaAktif = html.getAttribute('data-admin-theme') === 'dark' ? 'light' : 'dark';
-            setTemaAdmin(temaAktif);
-        });
-
-        adminProfileButton.addEventListener('click', function (event) {
-            event.stopPropagation();
-            adminProfileDropdown.classList.toggle('show');
-        });
-
-        document.addEventListener('click', function (event) {
-            if (!adminProfileDropdown.contains(event.target) && !adminProfileButton.contains(event.target)) {
-                adminProfileDropdown.classList.remove('show');
-            }
-        });
-
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                adminProfileDropdown.classList.remove('show');
-            }
-        });
-
-        document.querySelectorAll('[data-toggle-password]').forEach(function (button) {
-            button.addEventListener('click', function () {
-                const inputId = button.getAttribute('data-toggle-password');
-                const input = document.getElementById(inputId);
-
-                if (!input) {
-                    return;
-                }
-
-                const sedangPassword = input.getAttribute('type') === 'password';
-
-                input.setAttribute('type', sedangPassword ? 'text' : 'password');
-                button.textContent = sedangPassword ? 'Tutup' : 'Lihat';
-                button.setAttribute(
-                    'aria-label',
-                    sedangPassword ? 'Sembunyikan password' : 'Tampilkan password'
-                );
-            });
-        });
-    </script>
 </body>
 </html>

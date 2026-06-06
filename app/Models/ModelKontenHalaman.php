@@ -18,6 +18,7 @@ class ModelKontenHalaman extends Model
         'unit-dc'         => 'halaman_unit_dc',
         'unit-lansia'     => 'halaman_unit_lansia',
         'informasi'       => 'halaman_informasi',
+        'footer'          => 'halaman_footer',
     ];
 
     public function daftarHalaman(): array
@@ -31,6 +32,7 @@ class ModelKontenHalaman extends Model
             'unit-dc'         => 'Unit Daycare',
             'unit-lansia'     => 'Unit Lansia',
             'informasi'       => 'Informasi',
+            'footer'          => 'Footer',
         ];
     }
 

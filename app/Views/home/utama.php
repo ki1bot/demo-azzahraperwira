@@ -38,9 +38,12 @@
         'namaHalaman'   => $namaHalaman ?? '',
         'kontenHalaman' => $kontenHalaman ?? [],
         'kontenMap'     => $kontenMap ?? [],
+        'footerMap'     => $footerMap ?? [],
     ]) ?>
 
-    <?= view('umum/footer') ?>
+    <?= view('umum/footer', [
+        'footerMap' => $footerMap ?? [],
+    ]) ?>
 </body>
 
 </html>

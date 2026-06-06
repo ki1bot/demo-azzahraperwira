@@ -86,6 +86,11 @@ function adminAktif(string $kataKunci, string $uriString): string
                     <span class="nav-icon">I</span>
                     <span>Informasi</span>
                 </a>
+
+                <a href="<?= site_url('admin/halaman/footer') ?>" class="<?= adminAktif('halaman/footer', $uriString) ?>">
+                    <span class="nav-icon">F</span>
+                    <span>Footer</span>
+                </a>
             </nav>
 
             <div class="nav-label">Website</div>

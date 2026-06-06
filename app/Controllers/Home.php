@@ -72,6 +72,7 @@ class Home extends BaseController
             'namaHalaman'   => $daftarHalaman[$kodeHalaman] ?? 'Halaman',
             'kontenHalaman' => $this->modelKonten->semuaAktif($kodeHalaman),
             'kontenMap'     => $this->modelKonten->petaAktif($kodeHalaman),
+            'footerMap'     => $this->modelKonten->petaAktif('footer'),
         ];
 
         return view('home/utama', $data);

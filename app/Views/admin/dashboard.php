@@ -14,7 +14,7 @@ $deskripsiHalaman = [
 ];
 
 $adminHalamanUrl = static function (string $kode): string {
-    return base_url('admin/halaman/' . trim($kode, '/') . '/index.php');
+    return base_url('admin/' . trim($kode, '/') . '/index.php');
 };
 ?>
 

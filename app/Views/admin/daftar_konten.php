@@ -24,7 +24,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
 
 function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten = null): string
 {
-    $url = 'admin/halaman/' . trim($kodeHalaman, '/');
+    $url = 'admin/' . trim($kodeHalaman, '/');
 
     if ($aksi !== '') {
         $url .= '/' . trim($aksi, '/');

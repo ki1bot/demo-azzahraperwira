@@ -12,13 +12,12 @@ class FilterAdmin implements FilterInterface
     {
         if (! session()->get('admin_masuk')) {
             return redirect()
-                ->to(site_url('admin/login'))
+                ->to(base_url('admin/login/index.php'))
                 ->with('error', 'Silakan login terlebih dahulu.');
         }
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
     {
-        //
     }
 }

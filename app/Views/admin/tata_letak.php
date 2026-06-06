@@ -58,47 +58,47 @@ function adminUrl(string $path = ''): string
                     <span>Dashboard</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/beranda/index.php') ?>" class="<?= adminAktif('admin/halaman/beranda', $uriString) ?>">
+                <a href="<?= base_url('admin/beranda/index.php') ?>" class="<?= adminAktif('admin/beranda', $uriString) ?>">
                     <span class="nav-icon">H</span>
                     <span>Beranda</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/profile/index.php') ?>" class="<?= adminAktif('admin/halaman/profile', $uriString) ?>">
+                <a href="<?= base_url('admin/profile/index.php') ?>" class="<?= adminAktif('admin/profile', $uriString) ?>">
                     <span class="nav-icon">P</span>
                     <span>Profile</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/tenaga-pengajar/index.php') ?>" class="<?= adminAktif('admin/halaman/tenaga-pengajar', $uriString) ?>">
+                <a href="<?= base_url('admin/tenaga-pengajar/index.php') ?>" class="<?= adminAktif('admin/tenaga-pengajar', $uriString) ?>">
                     <span class="nav-icon">G</span>
                     <span>Tenaga Pengajar</span>
                 </a>
 
-               <a href="<?= base_url('admin/halaman/unit-kb-tk/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-kb-tk', $uriString) ?>">
+               <a href="<?= base_url('admin/unit-kb-tk/index.php') ?>" class="<?= adminAktif('admin/unit-kb-tk', $uriString) ?>">
                     <span class="nav-icon">K</span>
                     <span>Unit KB/TK</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/unit-tpq/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-tpq', $uriString) ?>">
+                <a href="<?= base_url('admin/unit-tpq/index.php') ?>" class="<?= adminAktif('admin/unit-tpq', $uriString) ?>">
                     <span class="nav-icon">T</span>
                     <span>Unit TPQ</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/unit-dc/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-dc', $uriString) ?>">
+                <a href="<?= base_url('admin/unit-dc/index.php') ?>" class="<?= adminAktif('admin/unit-dc', $uriString) ?>">
                     <span class="nav-icon">D</span>
                     <span>Unit Daycare</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/unit-lansia/index.php') ?>" class="<?= adminAktif('admin/halaman/unit-lansia', $uriString) ?>">
+                <a href="<?= base_url('admin/unit-lansia/index.php') ?>" class="<?= adminAktif('admin/unit-lansia', $uriString) ?>">
                     <span class="nav-icon">L</span>
                     <span>Unit Lansia</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/informasi/index.php') ?>" class="<?= adminAktif('admin/halaman/informasi', $uriString) ?>">
+                <a href="<?= base_url('admin/informasi/index.php') ?>" class="<?= adminAktif('admin/informasi', $uriString) ?>">
                     <span class="nav-icon">I</span>
                     <span>Informasi</span>
                 </a>
 
-                <a href="<?= base_url('admin/halaman/footer/index.php') ?>" class="<?= adminAktif('admin/halaman/footer', $uriString) ?>">
+                <a href="<?= base_url('admin/footer/index.php') ?>" class="<?= adminAktif('admin/footer', $uriString) ?>">
                     <span class="nav-icon">F</span>
                     <span>Footer</span>
                 </a>

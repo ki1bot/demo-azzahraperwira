@@ -53,22 +53,22 @@ function adminUrl(string $path = ''): string
             <div class="nav-label">Menu Utama</div>
 
             <nav class="admin-nav">
-                <a href="<?= adminUrl('dashboard') ?>" class="<?= adminAktif('admin/dashboard', $uriString) ?>">
+                <a href="<?= adminUrl('admin/dashboard/index.php') ?>" class="<?= adminAktif('admin/dashboard', $uriString) ?>">
                     <span class="nav-icon">⌂</span>
                     <span>Dashboard</span>
                 </a>
 
-                <a href="<?= adminUrl('beranda') ?>" class="<?= adminAktif('admin/beranda', $uriString) ?>">
+                <a href="<?= adminUrl('admin/halaman/beranda/index.php') ?>" class="<?= adminAktif('admin/beranda', $uriString) ?>">
                     <span class="nav-icon">H</span>
                     <span>Beranda</span>
                 </a>
 
-                <a href="<?= adminUrl('profile') ?>" class="<?= adminAktif('admin/profile', $uriString) ?>">
+                <a href="<?= adminUrl('admin/halaman/profile/index.php') ?>" class="<?= adminAktif('admin/profile', $uriString) ?>">
                     <span class="nav-icon">P</span>
                     <span>Profile</span>
                 </a>
 
-                <a href="<?= adminUrl('tenaga-pengajar') ?>" class="<?= adminAktif('admin/tenaga-pengajar', $uriString) ?>">
+                <a href="<?= adminUrl('admin/halaman/tenaga-pengajar/index.php') ?>" class="<?= adminAktif('admin/tenaga-pengajar', $uriString) ?>">
                     <span class="nav-icon">G</span>
                     <span>Tenaga Pengajar</span>
                 </a>

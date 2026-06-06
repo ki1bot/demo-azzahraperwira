@@ -10,7 +10,12 @@ $deskripsiHalaman = [
     'unit-dc'         => 'Kelola konten unit Daycare.',
     'unit-lansia'     => 'Kelola konten unit Lansia.',
     'informasi'       => 'Kelola informasi, kegiatan, dan pengumuman.',
+    'footer'          => 'Kelola konten footer website.',
 ];
+
+$adminHalamanUrl = static function (string $kode): string {
+    return base_url('admin/halaman/' . trim($kode, '/') . '/index.php');
+};
 ?>
 
 <div class="stat-grid">
@@ -37,7 +42,7 @@ $deskripsiHalaman = [
 
 <div class="section-heading">
     <h2>Dashboard Admin</h2>
-    <p>Pilih halaman yang ingin dikelola. Setiap halaman bisa ditambah, diedit, dan dihapus konten teks atau gambarnya.</p>
+    <p>Pilih halaman yang ingin dikelola. Setiap halaman bisa dikelola melalui URL admin khusus.</p>
 </div>
 
 <?php if (! empty($daftarHalaman)): ?>
@@ -54,7 +59,7 @@ $deskripsiHalaman = [
                 </div>
 
                 <div class="card-action">
-                    <a href="<?= site_url('admin/halaman/' . $kode) ?>" class="btn btn-primary">
+                    <a href="<?= $adminHalamanUrl($kode) ?>" class="btn btn-primary">
                         Kelola Konten
                     </a>
                 </div>

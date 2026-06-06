@@ -7,10 +7,25 @@ use App\Models\ModelAdminPengguna;
 
 class Otentikasi extends BaseController
 {
+    private function loginUrl(): string
+    {
+        return base_url('admin/login/index.php');
+    }
+
+    private function dashboardUrl(): string
+    {
+        return base_url('admin/dashboard/index.php');
+    }
+
+    private function ubahPasswordUrl(): string
+    {
+        return base_url('admin/ubah-password/index.php');
+    }
+
     public function login()
     {
         if (session()->get('admin_masuk')) {
-            return redirect()->to(site_url('admin/dashboard'));
+            return redirect()->to($this->dashboardUrl());
         }
 
         return view('admin/login', [
@@ -21,7 +36,7 @@ class Otentikasi extends BaseController
     public function prosesLogin()
     {
         if (strtolower($this->request->getMethod()) !== 'post') {
-            return redirect()->to(site_url('admin/login'));
+            return redirect()->to($this->loginUrl());
         }
 
         $aturan = [
@@ -68,7 +83,7 @@ class Otentikasi extends BaseController
             'username_admin' => $admin['username'],
         ]);
 
-        return redirect()->to(site_url('admin/dashboard'));
+        return redirect()->to($this->dashboardUrl());
     }
 
     public function ubahPassword()
@@ -84,7 +99,7 @@ class Otentikasi extends BaseController
     public function prosesUbahPassword()
     {
         if (strtolower($this->request->getMethod()) !== 'post') {
-            return redirect()->to(site_url('admin/ubah-password'));
+            return redirect()->to($this->ubahPasswordUrl());
         }
 
         $aturan = [
@@ -123,7 +138,7 @@ class Otentikasi extends BaseController
             session()->destroy();
 
             return redirect()
-                ->to(site_url('admin/login'))
+                ->to($this->loginUrl())
                 ->with('error', 'Sesi admin tidak valid. Silakan login ulang.');
         }
 
@@ -134,7 +149,7 @@ class Otentikasi extends BaseController
             session()->destroy();
 
             return redirect()
-                ->to(site_url('admin/login'))
+                ->to($this->loginUrl())
                 ->with('error', 'Akun admin tidak ditemukan atau sudah tidak aktif.');
         }
 
@@ -160,7 +175,7 @@ class Otentikasi extends BaseController
         session()->regenerate(true);
 
         return redirect()
-            ->to(site_url('admin/ubah-password'))
+            ->to($this->ubahPasswordUrl())
             ->with('success', 'Password admin berhasil diubah.');
     }
 
@@ -176,7 +191,7 @@ class Otentikasi extends BaseController
         session()->regenerate(true);
 
         return redirect()
-            ->to(site_url('admin/login'))
+            ->to($this->loginUrl())
             ->with('success', 'Logout berhasil.');
     }
 }

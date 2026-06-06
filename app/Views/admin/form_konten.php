@@ -3,6 +3,7 @@ $mode = $mode ?? 'tambah';
 $konten = $konten ?? null;
 $kodeHalaman = $kodeHalaman ?? '';
 $namaHalaman = $namaHalaman ?? 'Halaman';
+$halamanTetap = (bool) ($halamanTetap ?? false);
 
 $isEdit = $mode === 'edit' && ! empty($konten);
 
@@ -11,26 +12,45 @@ $action = $isEdit
     : site_url('admin/halaman/' . $kodeHalaman . '/simpan');
 
 $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
+$kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
 ?>
 
 <div class="section-heading">
     <h2><?= esc($judulForm) ?> - <?= esc($namaHalaman) ?></h2>
-    <p>Isi data konten dengan benar. Kode konten dipakai frontend untuk membaca data dari database.</p>
+
+    <?php if ($halamanTetap): ?>
+        <p>
+            Halaman ini memakai kode konten tetap agar backend sesuai dengan frontend.
+            Kode konten tidak bisa diubah, hanya judul, isi, gambar, urutan, dan status yang bisa diedit.
+        </p>
+    <?php else: ?>
+        <p>
+            Isi data konten dengan benar. Untuk format teks, gunakan tombol format atau ketik format teks biasa tanpa tag HTML.
+        </p>
+    <?php endif; ?>
 </div>
 
 <form action="<?= $action ?>" method="post" enctype="multipart/form-data" class="admin-form">
     <div class="form-grid">
         <div class="form-group">
             <label for="kode_konten" class="form-label">Kode Konten</label>
+
             <input
                 type="text"
                 name="kode_konten"
                 id="kode_konten"
                 class="form-control"
-                value="<?= esc(old('kode_konten', $konten['kode_konten'] ?? '')) ?>"
+                value="<?= esc($kodeValue) ?>"
                 placeholder="Contoh: hero, tentang_singkat, galeri_1"
+                <?= $halamanTetap && $isEdit ? 'readonly' : '' ?>
                 required
             >
+
+            <?php if ($halamanTetap && $isEdit): ?>
+                <div class="form-help">
+                    Kode konten dikunci supaya tetap cocok dengan kode yang dipanggil di frontend.
+                </div>
+            <?php endif; ?>
         </div>
 
         <div class="form-group">
@@ -47,12 +67,30 @@ $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 
         <div class="form-group full">
             <label for="isi" class="form-label">Isi</label>
+
+            <div class="editor-toolbar" data-editor-toolbar="isi">
+                <button type="button" class="btn btn-secondary btn-sm" data-format="bold">Bold</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-format="italic">Italic</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-format="underline">Underline</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-format="strike">Coret</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-format="code">Kode</button>
+            </div>
+
             <textarea
                 name="isi"
                 id="isi"
                 class="form-control"
                 placeholder="Masukkan isi konten"
             ><?= esc(old('isi', $konten['isi'] ?? '')) ?></textarea>
+
+            <div class="form-help">
+                Format tanpa tag HTML:
+                <strong>**tebal**</strong>,
+                <em>*miring*</em>,
+                <u>__garis bawah__</u>,
+                <del>~~coret~~</del>,
+                <code>`kode`</code>.
+            </div>
         </div>
 
         <div class="form-group">
@@ -122,3 +160,48 @@ $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
         </button>
     </div>
 </form>
+
+<script>
+document.querySelectorAll('[data-editor-toolbar]').forEach(function (toolbar) {
+    const targetId = toolbar.getAttribute('data-editor-toolbar');
+    const textarea = document.getElementById(targetId);
+
+    if (!textarea) {
+        return;
+    }
+
+    const formatMap = {
+        bold: ['**', '**', 'teks tebal'],
+        italic: ['*', '*', 'teks miring'],
+        underline: ['__', '__', 'teks garis bawah'],
+        strike: ['~~', '~~', 'teks dicoret'],
+        code: ['`', '`', 'kode']
+    };
+
+    toolbar.querySelectorAll('[data-format]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            const format = button.getAttribute('data-format');
+            const config = formatMap[format];
+
+            if (!config) {
+                return;
+            }
+
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end);
+            const text = selected || config[2];
+            const replacement = config[0] + text + config[1];
+
+            textarea.value =
+                textarea.value.substring(0, start) +
+                replacement +
+                textarea.value.substring(end);
+
+            textarea.focus();
+            textarea.selectionStart = start + config[0].length;
+            textarea.selectionEnd = start + config[0].length + text.length;
+        });
+    });
+});
+</script>

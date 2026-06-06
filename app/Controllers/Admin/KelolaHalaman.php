@@ -10,8 +10,15 @@ class KelolaHalaman extends BaseController
 {
     private ModelKontenHalaman $modelKonten;
 
+    private array $halamanBolehTambah = [
+        'tenaga-pengajar',
+        'informasi',
+    ];
+
     public function __construct()
     {
+        helper('konten');
+
         $this->modelKonten = new ModelKontenHalaman();
     }
 
@@ -37,10 +44,12 @@ class KelolaHalaman extends BaseController
         }
 
         $data = [
-            'judul'        => 'Kelola ' . $daftarHalaman[$kodeHalaman],
-            'kodeHalaman'  => $kodeHalaman,
-            'namaHalaman'  => $daftarHalaman[$kodeHalaman],
-            'daftarKonten' => $this->modelKonten->semua($kodeHalaman),
+            'judul'          => 'Kelola ' . $daftarHalaman[$kodeHalaman],
+            'kodeHalaman'    => $kodeHalaman,
+            'namaHalaman'    => $daftarHalaman[$kodeHalaman],
+            'daftarKonten'   => $this->modelKonten->semua($kodeHalaman),
+            'bolehTambah'    => $this->bolehTambahKonten($kodeHalaman),
+            'halamanTetap'   => ! $this->bolehTambahKonten($kodeHalaman),
         ];
 
         return view('admin/tata_letak', [
@@ -57,12 +66,20 @@ class KelolaHalaman extends BaseController
             throw PageNotFoundException::forPageNotFound('Halaman tidak ditemukan.');
         }
 
+        if (! $this->bolehTambahKonten($kodeHalaman)) {
+            return redirect()
+                ->to(site_url('admin/halaman/' . $kodeHalaman))
+                ->with('error', 'Halaman ' . $daftarHalaman[$kodeHalaman] . ' hanya boleh diedit. Tidak boleh menambahkan konten baru.');
+        }
+
         $data = [
-            'judul'       => 'Tambah Konten',
-            'mode'        => 'tambah',
-            'kodeHalaman' => $kodeHalaman,
-            'namaHalaman' => $daftarHalaman[$kodeHalaman],
-            'konten'      => null,
+            'judul'        => 'Tambah Konten',
+            'mode'         => 'tambah',
+            'kodeHalaman'  => $kodeHalaman,
+            'namaHalaman'  => $daftarHalaman[$kodeHalaman],
+            'konten'       => null,
+            'bolehTambah'  => true,
+            'halamanTetap' => false,
         ];
 
         return view('admin/tata_letak', [
@@ -78,6 +95,12 @@ class KelolaHalaman extends BaseController
         }
 
         $this->pastikanHalamanAda($kodeHalaman);
+
+        if (! $this->bolehTambahKonten($kodeHalaman)) {
+            return redirect()
+                ->to(site_url('admin/halaman/' . $kodeHalaman))
+                ->with('error', 'Halaman ini tidak boleh menambahkan data baru. Gunakan tombol Edit pada konten yang sudah tersedia.');
+        }
 
         if (! $this->validasiFormKonten()) {
             return redirect()->back()
@@ -125,11 +148,13 @@ class KelolaHalaman extends BaseController
         }
 
         $data = [
-            'judul'       => 'Edit Konten',
-            'mode'        => 'edit',
-            'kodeHalaman' => $kodeHalaman,
-            'namaHalaman' => $daftarHalaman[$kodeHalaman],
-            'konten'      => $konten,
+            'judul'        => 'Edit Konten',
+            'mode'         => 'edit',
+            'kodeHalaman'  => $kodeHalaman,
+            'namaHalaman'  => $daftarHalaman[$kodeHalaman],
+            'konten'       => $konten,
+            'bolehTambah'  => $this->bolehTambahKonten($kodeHalaman),
+            'halamanTetap' => ! $this->bolehTambahKonten($kodeHalaman),
         ];
 
         return view('admin/tata_letak', [
@@ -164,7 +189,9 @@ class KelolaHalaman extends BaseController
                 ->with('error', implode('<br>', $this->validator->getErrors()));
         }
 
-        $kodeKonten = $this->normalisasiKodeKonten();
+        $kodeKonten = $this->bolehTambahKonten($kodeHalaman)
+            ? $this->normalisasiKodeKonten()
+            : (string) ($kontenLama['kode_konten'] ?? '');
 
         if ($this->modelKonten->kodeSudahAda($kodeHalaman, $kodeKonten, $idKonten)) {
             return redirect()->back()
@@ -202,6 +229,12 @@ class KelolaHalaman extends BaseController
 
         $this->pastikanHalamanAda($kodeHalaman);
 
+        if (! $this->bolehTambahKonten($kodeHalaman)) {
+            return redirect()
+                ->to(site_url('admin/halaman/' . $kodeHalaman))
+                ->with('error', 'Konten halaman ini tidak boleh dihapus. Halaman ini hanya boleh diedit.');
+        }
+
         $konten = $this->modelKonten->satu($kodeHalaman, $idKonten);
 
         if (! $konten) {
@@ -214,6 +247,11 @@ class KelolaHalaman extends BaseController
         return redirect()
             ->to(site_url('admin/halaman/' . $kodeHalaman))
             ->with('success', 'Konten berhasil dihapus. Frontend akan mengikuti data terbaru.');
+    }
+
+    private function bolehTambahKonten(string $kodeHalaman): bool
+    {
+        return in_array($kodeHalaman, $this->halamanBolehTambah, true);
     }
 
     private function pastikanHalamanAda(string $kodeHalaman): void

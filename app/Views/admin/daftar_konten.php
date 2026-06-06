@@ -1,11 +1,15 @@
 <?php
+helper('konten');
+
 $daftarKonten = $daftarKonten ?? [];
 $kodeHalaman = $kodeHalaman ?? '';
 $namaHalaman = $namaHalaman ?? 'Halaman';
+$bolehTambah = (bool) ($bolehTambah ?? false);
+$halamanTetap = (bool) ($halamanTetap ?? false);
 
 function adminRingkasTeks(?string $teks, int $maksimal = 95): string
 {
-    $teks = trim(strip_tags((string) $teks));
+    $teks = konten_plain($teks);
 
     if ($teks === '') {
         return '-';
@@ -22,12 +26,19 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
 <div class="table-header">
     <div>
         <h2>Kelola <?= esc($namaHalaman) ?></h2>
-        <p>Atur teks, gambar, urutan, dan status konten untuk halaman ini.</p>
+
+        <?php if ($bolehTambah): ?>
+            <p>Halaman ini mendukung banyak data. Admin boleh menambah, mengedit, dan menghapus konten.</p>
+        <?php else: ?>
+            <p>Halaman ini hanya boleh diedit. Admin tidak bisa menambahkan atau menghapus data baru.</p>
+        <?php endif; ?>
     </div>
 
-    <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
-        + Tambah Konten
-    </a>
+    <?php if ($bolehTambah): ?>
+        <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
+            + Tambah Konten
+        </a>
+    <?php endif; ?>
 </div>
 
 <?php if (! empty($daftarKonten)): ?>
@@ -95,15 +106,17 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
                                     Edit
                                 </a>
 
-                                <form
-                                    action="<?= site_url('admin/halaman/' . $kodeHalaman . '/hapus/' . ($konten['id_konten'] ?? 0)) ?>"
-                                    method="post"
-                                    onsubmit="return confirm('Yakin ingin menghapus konten ini?')"
-                                >
-                                    <button type="submit" class="btn btn-danger">
-                                        Hapus
-                                    </button>
-                                </form>
+                                <?php if ($bolehTambah): ?>
+                                    <form
+                                        action="<?= site_url('admin/halaman/' . $kodeHalaman . '/hapus/' . ($konten['id_konten'] ?? 0)) ?>"
+                                        method="post"
+                                        onsubmit="return confirm('Yakin ingin menghapus konten ini?')"
+                                    >
+                                        <button type="submit" class="btn btn-danger">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                <?php endif; ?>
                             </div>
                         </td>
                     </tr>
@@ -113,13 +126,21 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
     </div>
 <?php else: ?>
     <div class="empty-state">
-        <h3>Belum ada konten</h3>
-        <p>Tambahkan konten pertama untuk halaman <?= esc($namaHalaman) ?>.</p>
+        <?php if ($bolehTambah): ?>
+            <h3>Belum ada konten</h3>
+            <p>Tambahkan konten pertama untuk halaman <?= esc($namaHalaman) ?>.</p>
 
-        <div class="empty-action">
-            <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
-                Tambah Konten
-            </a>
-        </div>
+            <div class="empty-action">
+                <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
+                    Tambah Konten
+                </a>
+            </div>
+        <?php else: ?>
+            <h3>Data konten belum tersedia</h3>
+            <p>
+                Halaman ini tidak boleh menambah data baru dari tombol admin.
+                Buat data awal sesuai kode konten frontend melalui database, lalu admin hanya mengedit data tersebut.
+            </p>
+        <?php endif; ?>
     </div>
 <?php endif; ?>

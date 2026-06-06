@@ -35,7 +35,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
     </div>
 
     <?php if ($bolehTambah): ?>
-        <a href="<?= site_url('admin/halaman/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
+        <a href="<?= site_url('admin/' . $kodeHalaman . '/tambah') ?>" class="btn btn-primary">
             + Tambah Konten
         </a>
     <?php endif; ?>
@@ -100,7 +100,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
                         <td>
                             <div class="table-actions">
                                 <a
-                                    href="<?= site_url('admin/halaman/' . $kodeHalaman . '/edit/' . ($konten['id_konten'] ?? 0)) ?>"
+                                    href="<?= site_url('admin/' . $kodeHalaman . '/edit/' . ($konten['id_konten'] ?? 0)) ?>"
                                     class="btn btn-secondary"
                                 >
                                     Edit
@@ -108,7 +108,7 @@ function adminRingkasTeks(?string $teks, int $maksimal = 95): string
 
                                 <?php if ($bolehTambah): ?>
                                     <form
-                                        action="<?= site_url('admin/halaman/' . $kodeHalaman . '/hapus/' . ($konten['id_konten'] ?? 0)) ?>"
+                                        action="<?= site_url('admin/' . $kodeHalaman . '/hapus/' . ($konten['id_konten'] ?? 0)) ?>"
                                         method="post"
                                         onsubmit="return confirm('Yakin ingin menghapus konten ini?')"
                                     >

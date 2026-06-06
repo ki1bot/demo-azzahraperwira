@@ -8,8 +8,8 @@ $halamanTetap = (bool) ($halamanTetap ?? false);
 $isEdit = $mode === 'edit' && ! empty($konten);
 
 $action = $isEdit
-    ? site_url('admin/halaman/' . $kodeHalaman . '/update/' . ($konten['id_konten'] ?? 0))
-    : site_url('admin/halaman/' . $kodeHalaman . '/simpan');
+    ? site_url('admin/' . $kodeHalaman . '/update/' . ($konten['id_konten'] ?? 0))
+    : site_url('admin/' . $kodeHalaman . '/simpan');
 
 $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
@@ -151,7 +151,7 @@ $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
     </div>
 
     <div class="form-actions">
-        <a href="<?= site_url('admin/halaman/' . $kodeHalaman) ?>" class="btn btn-secondary">
+        <a href="<?= site_url('admin/' . $kodeHalaman) ?>" class="btn btn-secondary">
             Kembali
         </a>
 

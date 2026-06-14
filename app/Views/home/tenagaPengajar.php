@@ -81,42 +81,64 @@ $defaultPengajar = [
 
     <main class="container mx-auto px-6 py-12">
         <?php if (! empty($daftarPengajar)): ?>
-            <section class="mb-16">
-                <h2 class="text-3xl font-bold text-az-green mb-8 border-l-4 border-az-gold pl-4">
-                    Daftar Tenaga Pengajar
-                </h2>
+            <?php
+            $pengajarPerKategori = [];
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <?php foreach ($daftarPengajar as $pengajar): ?>
-                        <?php
-                        $foto = trim((string) ($pengajar['gambar'] ?? ''));
-                        ?>
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-lg transition text-center">
-                            <div class="w-24 h-24 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-az-gold shadow-sm">
-                                <?php if ($foto !== ''): ?>
-                                    <img src="<?= esc(base_url($foto), 'attr') ?>"
-                                         alt="<?= esc($pengajar['judul'] ?? 'Tenaga Pengajar', 'attr') ?>"
-                                         class="w-full h-full object-cover">
-                                <?php else: ?>
-                                    <svg class="w-12 h-12 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                                    </svg>
+            foreach ($daftarPengajar as $pengajar) {
+                $kategori = trim((string) ($pengajar['kategori'] ?? ''));
+
+                if ($kategori === '') {
+                    $kategori = 'Daftar Tenaga Pengajar';
+                }
+
+                $pengajarPerKategori[$kategori][] = $pengajar;
+            }
+            ?>
+
+            <?php foreach ($pengajarPerKategori as $kategori => $itemsPengajar): ?>
+                <section class="mb-16">
+                    <h2 class="text-3xl font-bold text-az-green mb-8 border-l-4 border-az-gold pl-4">
+                        <?= esc($kategori) ?>
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <?php foreach ($itemsPengajar as $pengajar): ?>
+                            <?php
+                            $foto = trim((string) ($pengajar['gambar'] ?? ''));
+                            ?>
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100 hover:shadow-lg transition text-center">
+                                <div class="w-24 h-24 bg-slate-100 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden border-2 border-az-gold shadow-sm">
+                                    <?php if ($foto !== ''): ?>
+                                        <img src="<?= esc(base_url($foto), 'attr') ?>"
+                                             alt="<?= esc($pengajar['judul'] ?? 'Tenaga Pengajar', 'attr') ?>"
+                                             class="w-full h-full object-cover">
+                                    <?php else: ?>
+                                        <svg class="w-12 h-12 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    <?php endif; ?>
+                                </div>
+
+                                <h3 class="font-bold text-az-green">
+                                    <?= esc($pengajar['judul'] ?? 'Nama Pengajar') ?>
+                                </h3>
+
+                                <?php if (! empty($pengajar['pendidikan'])): ?>
+                                    <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full mt-2 mb-2">
+                                        <?= esc($pengajar['pendidikan']) ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                <?php if (! empty($pengajar['isi'])): ?>
+                                    <p class="text-sm text-gray-600 mt-2">
+                                        <?= nl2br(esc($pengajar['isi'])) ?>
+                                    </p>
                                 <?php endif; ?>
                             </div>
-
-                            <h3 class="font-bold text-az-green">
-                                <?= esc($pengajar['judul'] ?? 'Nama Pengajar') ?>
-                            </h3>
-
-                            <?php if (! empty($pengajar['isi'])): ?>
-                                <p class="text-sm text-gray-600 mt-2">
-                                    <?= nl2br(esc($pengajar['isi'])) ?>
-                                </p>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </section>
+                        <?php endforeach; ?>
+                    </div>
+                </section>
+            <?php endforeach; ?>
         <?php else: ?>
             <?php foreach ($defaultPengajar as $grup): ?>
                 <section class="mb-16">

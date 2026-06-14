@@ -67,20 +67,50 @@ $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
             <?php endif; ?>
         </div>
 
+        <?php if ($kodeHalaman === 'tenaga-pengajar'): ?>
+            <div class="form-group">
+                <label for="kategori" class="form-label">Kategori Pengajar</label>
+                <input
+                    type="text"
+                    name="kategori"
+                    id="kategori"
+                    class="form-control"
+                    value="<?= esc(old('kategori', $konten['kategori'] ?? '')) ?>"
+                    placeholder="Contoh: Pendidik Rumah Quran (RTQ)"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="pendidikan" class="form-label">Pendidikan / Lulusan</label>
+                <input
+                    type="text"
+                    name="pendidikan"
+                    id="pendidikan"
+                    class="form-control"
+                    value="<?= esc(old('pendidikan', $konten['pendidikan'] ?? '')) ?>"
+                    placeholder="Contoh: S1, S2, D2, Madrasah A’liyah"
+                >
+            </div>
+        <?php endif; ?>
+
         <div class="form-group">
-            <label for="judul" class="form-label">Judul</label>
+            <label for="judul" class="form-label">
+                <?= $kodeHalaman === 'tenaga-pengajar' ? 'Nama Pengajar' : 'Judul' ?>
+            </label>
             <input
                 type="text"
                 name="judul"
                 id="judul"
                 class="form-control"
                 value="<?= esc(old('judul', $konten['judul'] ?? '')) ?>"
-                placeholder="Masukkan judul konten"
+                placeholder="<?= $kodeHalaman === 'tenaga-pengajar' ? 'Masukkan nama pengajar' : 'Masukkan judul konten' ?>"
             >
         </div>
 
         <div class="form-group full">
-            <label for="isi" class="form-label">Isi</label>
+            <label for="isi" class="form-label">
+                <?= $kodeHalaman === 'tenaga-pengajar' ? 'Jabatan' : 'Isi' ?>
+            </label>
 
             <div class="editor-toolbar" data-editor-toolbar="isi">
                 <button type="button" class="btn btn-secondary btn-sm" data-format="bold">Bold</button>
@@ -94,7 +124,7 @@ $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
                 name="isi"
                 id="isi"
                 class="form-control"
-                placeholder="Masukkan isi konten"
+                placeholder="<?= $kodeHalaman === 'tenaga-pengajar' ? 'Contoh: Guru Tahfidz Juz 30' : 'Masukkan isi konten' ?>"
             ><?= esc(old('isi', $konten['isi'] ?? '')) ?></textarea>
 
             <div class="form-help">

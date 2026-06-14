@@ -62,6 +62,12 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
             <thead>
                 <tr>
                     <th>Kode Konten</th>
+
+                    <?php if ($kodeHalaman === 'tenaga-pengajar'): ?>
+                        <th>Kategori</th>
+                        <th>Pendidikan</th>
+                    <?php endif; ?>
+
                     <th>Judul</th>
                     <th>Isi</th>
                     <th>Gambar</th>
@@ -77,6 +83,16 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
                         <td>
                             <strong><?= esc($konten['kode_konten'] ?? '-') ?></strong>
                         </td>
+
+                        <?php if ($kodeHalaman === 'tenaga-pengajar'): ?>
+                            <td>
+                                <?= esc(adminRingkasTeks($konten['kategori'] ?? '-', 55)) ?>
+                            </td>
+
+                            <td>
+                                <?= esc(adminRingkasTeks($konten['pendidikan'] ?? '-', 30)) ?>
+                            </td>
+                        <?php endif; ?>
 
                         <td>
                             <?= esc(adminRingkasTeks($konten['judul'] ?? '-', 55)) ?>

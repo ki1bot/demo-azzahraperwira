@@ -131,6 +131,11 @@ class KelolaHalaman extends BaseController
             'status'      => (string) $this->request->getPost('status'),
         ];
 
+        if ($kodeHalaman === 'tenaga-pengajar') {
+            $data['kategori'] = trim((string) $this->request->getPost('kategori'));
+            $data['pendidikan'] = trim((string) $this->request->getPost('pendidikan'));
+        }
+
         $this->modelKonten->tambah($kodeHalaman, $data);
 
         return redirect()
@@ -208,6 +213,11 @@ class KelolaHalaman extends BaseController
             'urutan'      => (int) $this->request->getPost('urutan'),
             'status'      => (string) $this->request->getPost('status'),
         ];
+
+        if ($kodeHalaman === 'tenaga-pengajar') {
+            $data['kategori'] = trim((string) $this->request->getPost('kategori'));
+            $data['pendidikan'] = trim((string) $this->request->getPost('pendidikan'));
+        }
 
         if ($gambarBaru !== null) {
             $data['gambar'] = $gambarBaru;

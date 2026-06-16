@@ -31,11 +31,14 @@ function adminUrl(string $path = ''): string
     <script src="<?= base_url('js/admin.js') ?>"></script>
 
     <link rel="stylesheet" href="<?= base_url('assets/css/admin.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('assets/css/responsive.css') ?>">
 </head>
 
 <body>
+    <div class="mobile-admin-backdrop" id="mobileAdminBackdrop"></div>
+
     <div class="admin-shell">
-        <aside class="admin-sidebar">
+        <aside class="admin-sidebar" id="adminSidebar">
             <div class="brand-box">
                 <div class="brand-logo">AZ</div>
 
@@ -43,6 +46,10 @@ function adminUrl(string $path = ''): string
                     <p class="brand-title">Admin Yayasan</p>
                     <p class="brand-subtitle">Az-Zahra Perwira</p>
                 </div>
+
+                <button type="button" class="mobile-admin-close" id="mobileAdminClose" aria-label="Tutup menu admin">
+                    ×
+                </button>
             </div>
 
             <div class="admin-user">
@@ -73,7 +80,7 @@ function adminUrl(string $path = ''): string
                     <span>Tenaga Pengajar</span>
                 </a>
 
-               <a href="<?= base_url('admin/unit-kb-tk/index.php') ?>" class="<?= adminAktif('admin/unit-kb-tk', $uriString) ?>">
+                <a href="<?= base_url('admin/unit-kb-tk/index.php') ?>" class="<?= adminAktif('admin/unit-kb-tk', $uriString) ?>">
                     <span class="nav-icon">K</span>
                     <span>Unit KB/TK</span>
                 </a>
@@ -117,6 +124,10 @@ function adminUrl(string $path = ''): string
         <main class="admin-main">
             <div class="topbar">
                 <div>
+                    <button type="button" class="mobile-admin-toggle" id="mobileAdminToggle" aria-label="Buka menu admin">
+                        <span></span>
+                    </button>
+
                     <h1 class="page-title"><?= esc($judulHalaman) ?></h1>
                     <p class="page-subtitle">Kelola konten website yayasan dari satu panel admin.</p>
                 </div>

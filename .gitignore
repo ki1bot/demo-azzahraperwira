@@ -1,5 +1,7 @@
 # ENVIRONMENT / SECRET FILES
 .env
+.env.example
+*sql
 
 # COMPOSER DEPENDENCIES
 /vendor/

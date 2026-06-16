@@ -5,6 +5,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   const html = document.documentElement;
+  const body = document.body;
 
   const tombolTema = document.getElementById("themeToggle");
   const teksTema = document.getElementById("themeText");
@@ -12,6 +13,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const adminProfileButton = document.getElementById("adminProfileButton");
   const adminProfileDropdown = document.getElementById("adminProfileDropdown");
+
+  const mobileAdminToggle = document.getElementById("mobileAdminToggle");
+  const mobileAdminClose = document.getElementById("mobileAdminClose");
+  const mobileAdminBackdrop = document.getElementById("mobileAdminBackdrop");
+  const adminSidebar = document.getElementById("adminSidebar");
 
   function setTemaAdmin(tema) {
     html.setAttribute("data-admin-theme", tema);
@@ -34,6 +40,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function bukaMenuAdmin() {
+    if (!adminSidebar || !mobileAdminBackdrop) {
+      return;
+    }
+
+    adminSidebar.classList.add("is-open");
+    mobileAdminBackdrop.classList.add("is-open");
+    body.classList.add("admin-menu-open");
+  }
+
+  function tutupMenuAdmin() {
+    if (!adminSidebar || !mobileAdminBackdrop) {
+      return;
+    }
+
+    adminSidebar.classList.remove("is-open");
+    mobileAdminBackdrop.classList.remove("is-open");
+    body.classList.remove("admin-menu-open");
+  }
+
   setTemaAdmin(localStorage.getItem("tema-admin-yayasan") || "light");
 
   if (tombolTema) {
@@ -41,6 +67,41 @@ document.addEventListener("DOMContentLoaded", function () {
       const temaAktif =
         html.getAttribute("data-admin-theme") === "dark" ? "light" : "dark";
       setTemaAdmin(temaAktif);
+    });
+  }
+
+  if (mobileAdminToggle && adminSidebar && mobileAdminBackdrop) {
+    mobileAdminToggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+
+      if (adminSidebar.classList.contains("is-open")) {
+        tutupMenuAdmin();
+      } else {
+        bukaMenuAdmin();
+      }
+    });
+
+    mobileAdminBackdrop.addEventListener("click", tutupMenuAdmin);
+
+    if (mobileAdminClose) {
+      mobileAdminClose.addEventListener("click", function (event) {
+        event.stopPropagation();
+        tutupMenuAdmin();
+      });
+    }
+
+    adminSidebar.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        if (window.innerWidth <= 1100) {
+          tutupMenuAdmin();
+        }
+      });
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 1100) {
+        tutupMenuAdmin();
+      }
     });
   }
 
@@ -62,6 +123,13 @@ document.addEventListener("DOMContentLoaded", function () {
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") {
         adminProfileDropdown.classList.remove("show");
+        tutupMenuAdmin();
+      }
+    });
+  } else {
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        tutupMenuAdmin();
       }
     });
   }

@@ -2,6 +2,7 @@
 helper('konten');
 
 $daftarKonten = $daftarKonten ?? [];
+$hakKonten = $hakKonten ?? [];
 $kodeHalaman = $kodeHalaman ?? '';
 $namaHalaman = $namaHalaman ?? 'Halaman';
 $bolehTambah = (bool) ($bolehTambah ?? false);
@@ -43,7 +44,7 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
         <h2>Kelola <?= esc($namaHalaman) ?></h2>
 
         <?php if ($bolehTambah): ?>
-            <p>Halaman ini mendukung banyak data. Admin boleh menambah, mengedit, dan menghapus konten.</p>
+            <p>Halaman ini mendukung banyak data. Admin boleh menambah, mengedit, dan menghapus konten tambahan.</p>
         <?php else: ?>
             <p>Halaman ini hanya boleh diedit. Admin tidak bisa menambahkan atau menghapus data baru.</p>
         <?php endif; ?>
@@ -70,7 +71,7 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
 
                     <th>Judul</th>
                     <th>Isi</th>
-                    <th>Gambar</th>
+                    <th>Media</th>
                     <th>Urutan</th>
                     <th>Status</th>
                     <th>Aksi</th>
@@ -79,6 +80,12 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
 
             <tbody>
                 <?php foreach ($daftarKonten as $konten): ?>
+                    <?php
+                    $idKonten = (int) ($konten['id_konten'] ?? 0);
+                    $tipeUpload = $hakKonten[$idKonten]['tipe_upload'] ?? 'none';
+                    $bolehHapusKonten = (bool) ($hakKonten[$idKonten]['boleh_hapus'] ?? false);
+                    ?>
+
                     <tr>
                         <td>
                             <strong><?= esc($konten['kode_konten'] ?? '-') ?></strong>
@@ -105,14 +112,26 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
                         </td>
 
                         <td>
-                            <?php if (! empty($konten['gambar'])): ?>
-                                <img
-                                    src="<?= base_url($konten['gambar']) ?>"
-                                    alt="<?= esc($konten['judul'] ?? 'Gambar konten') ?>"
-                                    class="image-thumb"
-                                >
+                            <?php if ($tipeUpload === 'image'): ?>
+                                <?php if (! empty($konten['gambar'])): ?>
+                                    <img
+                                        src="<?= base_url($konten['gambar']) ?>"
+                                        alt="<?= esc($konten['judul'] ?? 'Gambar konten') ?>"
+                                        class="image-thumb"
+                                    >
+                                <?php else: ?>
+                                    <span class="table-muted">Tidak ada gambar</span>
+                                <?php endif; ?>
+                            <?php elseif ($tipeUpload === 'file'): ?>
+                                <?php if (! empty($konten['isi'])): ?>
+                                    <a href="<?= base_url($konten['isi']) ?>" target="_blank" class="btn btn-secondary btn-sm">
+                                        Lihat File
+                                    </a>
+                                <?php else: ?>
+                                    <span class="table-muted">Tidak ada file</span>
+                                <?php endif; ?>
                             <?php else: ?>
-                                <span class="table-muted">Tidak ada gambar</span>
+                                <span class="table-muted">Tidak memakai media</span>
                             <?php endif; ?>
                         </td>
 
@@ -131,15 +150,15 @@ function adminHalamanUrl(string $kodeHalaman, string $aksi = '', ?int $idKonten 
                         <td>
                             <div class="table-actions">
                                 <a
-                                    href="<?= adminHalamanUrl($kodeHalaman, 'edit', (int) ($konten['id_konten'] ?? 0)) ?>"
+                                    href="<?= adminHalamanUrl($kodeHalaman, 'edit', $idKonten) ?>"
                                     class="btn btn-secondary"
                                 >
                                     Edit
                                 </a>
 
-                                <?php if ($bolehTambah): ?>
+                                <?php if ($bolehHapusKonten): ?>
                                     <form
-                                        action="<?= adminHalamanUrl($kodeHalaman, 'hapus', (int) ($konten['id_konten'] ?? 0)) ?>"
+                                        action="<?= adminHalamanUrl($kodeHalaman, 'hapus', $idKonten) ?>"
                                         method="post"
                                         onsubmit="return confirm('Yakin ingin menghapus konten ini?')"
                                     >

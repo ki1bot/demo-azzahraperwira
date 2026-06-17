@@ -24,6 +24,7 @@ $routes->get('home/unitTPQ', 'Home::unitTPQ');
 $routes->get('home/unitDC', 'Home::unitDC');
 $routes->get('home/unitLansia', 'Home::unitLansia');
 $routes->get('home/informasi', 'Home::informasi');
+$routes->get('home/informasi/detail/(:segment)', 'Home::detailInformasi/$1');
 
 $routes->get('index.php', 'Home::index');
 $routes->get('index.php/home', 'Home::index');
@@ -35,6 +36,7 @@ $routes->get('index.php/home/unitTPQ', 'Home::unitTPQ');
 $routes->get('index.php/home/unitDC', 'Home::unitDC');
 $routes->get('index.php/home/unitLansia', 'Home::unitLansia');
 $routes->get('index.php/home/informasi', 'Home::informasi');
+$routes->get('index.php/home/informasi/detail/(:segment)', 'Home::detailInformasi/$1');
 
 $routes->get('admin/login/index.php', 'Admin\Otentikasi::login');
 $routes->post('admin/login/index.php', 'Admin\Otentikasi::prosesLogin');
@@ -62,20 +64,32 @@ $routes->group('admin', ['filter' => 'filteradmin'], static function (RouteColle
     $routes->post('tenaga-pengajar/hapus/(:num)/index.php', 'Admin\KelolaHalaman::hapus/tenaga-pengajar/$1');
 
     $routes->get('unit-kb-tk/index.php', 'Admin\KelolaHalaman::index/unit-kb-tk');
+    $routes->get('unit-kb-tk/tambah/index.php', 'Admin\KelolaHalaman::tambah/unit-kb-tk');
+    $routes->post('unit-kb-tk/simpan/index.php', 'Admin\KelolaHalaman::simpan/unit-kb-tk');
     $routes->get('unit-kb-tk/edit/(:num)/index.php', 'Admin\KelolaHalaman::edit/unit-kb-tk/$1');
     $routes->post('unit-kb-tk/update/(:num)/index.php', 'Admin\KelolaHalaman::update/unit-kb-tk/$1');
+    $routes->post('unit-kb-tk/hapus/(:num)/index.php', 'Admin\KelolaHalaman::hapus/unit-kb-tk/$1');
 
     $routes->get('unit-tpq/index.php', 'Admin\KelolaHalaman::index/unit-tpq');
+    $routes->get('unit-tpq/tambah/index.php', 'Admin\KelolaHalaman::tambah/unit-tpq');
+    $routes->post('unit-tpq/simpan/index.php', 'Admin\KelolaHalaman::simpan/unit-tpq');
     $routes->get('unit-tpq/edit/(:num)/index.php', 'Admin\KelolaHalaman::edit/unit-tpq/$1');
     $routes->post('unit-tpq/update/(:num)/index.php', 'Admin\KelolaHalaman::update/unit-tpq/$1');
+    $routes->post('unit-tpq/hapus/(:num)/index.php', 'Admin\KelolaHalaman::hapus/unit-tpq/$1');
 
     $routes->get('unit-dc/index.php', 'Admin\KelolaHalaman::index/unit-dc');
+    $routes->get('unit-dc/tambah/index.php', 'Admin\KelolaHalaman::tambah/unit-dc');
+    $routes->post('unit-dc/simpan/index.php', 'Admin\KelolaHalaman::simpan/unit-dc');
     $routes->get('unit-dc/edit/(:num)/index.php', 'Admin\KelolaHalaman::edit/unit-dc/$1');
     $routes->post('unit-dc/update/(:num)/index.php', 'Admin\KelolaHalaman::update/unit-dc/$1');
+    $routes->post('unit-dc/hapus/(:num)/index.php', 'Admin\KelolaHalaman::hapus/unit-dc/$1');
 
     $routes->get('unit-lansia/index.php', 'Admin\KelolaHalaman::index/unit-lansia');
+    $routes->get('unit-lansia/tambah/index.php', 'Admin\KelolaHalaman::tambah/unit-lansia');
+    $routes->post('unit-lansia/simpan/index.php', 'Admin\KelolaHalaman::simpan/unit-lansia');
     $routes->get('unit-lansia/edit/(:num)/index.php', 'Admin\KelolaHalaman::edit/unit-lansia/$1');
     $routes->post('unit-lansia/update/(:num)/index.php', 'Admin\KelolaHalaman::update/unit-lansia/$1');
+    $routes->post('unit-lansia/hapus/(:num)/index.php', 'Admin\KelolaHalaman::hapus/unit-lansia/$1');
 
     $routes->get('informasi/index.php', 'Admin\KelolaHalaman::index/informasi');
     $routes->get('informasi/tambah/index.php', 'Admin\KelolaHalaman::tambah/informasi');

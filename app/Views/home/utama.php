@@ -32,14 +32,15 @@
     <?= view('umum/header') ?>
 
     <?= view($content, [
-        'title'         => $title ?? 'Yayasan Azzahra Perwira',
-        'statusMenu'    => $statusMenu ?? '',
-        'content'       => $content ?? '',
-        'kodeHalaman'   => $kodeHalaman ?? '',
-        'namaHalaman'   => $namaHalaman ?? '',
-        'kontenHalaman' => $kontenHalaman ?? [],
-        'kontenMap'     => $kontenMap ?? [],
-        'footerMap'     => $footerMap ?? [],
+        'title'           => $title ?? 'Yayasan Azzahra Perwira',
+        'statusMenu'      => $statusMenu ?? '',
+        'content'         => $content ?? '',
+        'kodeHalaman'     => $kodeHalaman ?? '',
+        'namaHalaman'     => $namaHalaman ?? '',
+        'kontenHalaman'   => $kontenHalaman ?? [],
+        'kontenMap'       => $kontenMap ?? [],
+        'footerMap'       => $footerMap ?? [],
+        'detailInformasi' => $detailInformasi ?? [],
     ]) ?>
 
     <?= view('umum/footer', [

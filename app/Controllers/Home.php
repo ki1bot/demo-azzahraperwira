@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ModelKontenHalaman;
+use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Home extends BaseController
 {
@@ -60,7 +61,22 @@ class Home extends BaseController
         return $this->tampilHalaman('informasi', 'home/informasi', 'informasi');
     }
 
-    private function tampilHalaman(string $statusMenu, string $viewKonten, string $kodeHalaman)
+    public function detailInformasi(string $kodeKonten)
+    {
+        $kodeKonten = url_title(trim($kodeKonten), '_', true);
+        $konten = $this->modelKonten->satuBerdasarkanKode('informasi', $kodeKonten);
+        $kodeKhusus = ['judul_halaman', 'subjudul_halaman', 'pengumuman', 'berita', 'brosur'];
+
+        if (! $konten || ($konten['status'] ?? '') !== 'aktif' || in_array($kodeKonten, $kodeKhusus, true)) {
+            throw PageNotFoundException::forPageNotFound('Detail informasi tidak ditemukan.');
+        }
+
+        return $this->tampilHalaman('informasi', 'home/detail_informasi', 'informasi', [
+            'detailInformasi' => $konten,
+        ]);
+    }
+
+    private function tampilHalaman(string $statusMenu, string $viewKonten, string $kodeHalaman, array $tambahan = [])
     {
         $daftarHalaman = $this->modelKonten->daftarHalaman();
 
@@ -75,6 +91,6 @@ class Home extends BaseController
             'footerMap'     => $this->modelKonten->petaAktif('footer'),
         ];
 
-        return view('home/utama', $data);
+        return view('home/utama', array_merge($data, $tambahan));
     }
 }

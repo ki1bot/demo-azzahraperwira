@@ -30,6 +30,30 @@ $buatUrl = static function (string $url, string $fallback = ''): string {
     return base_url($url);
 };
 
+$buatUrlDetail = static function (array $item): string {
+    $kodeKonten = trim((string) ($item['kode_konten'] ?? ''));
+
+    if ($kodeKonten === '') {
+        return '#';
+    }
+
+    return base_url('index.php/home/informasi/detail/' . rawurlencode($kodeKonten));
+};
+
+$ringkasTeks = static function (?string $teks, int $maksimal = 130): string {
+    $teks = trim(strip_tags((string) $teks));
+
+    if ($teks === '') {
+        return '';
+    }
+
+    if (mb_strlen($teks) <= $maksimal) {
+        return $teks;
+    }
+
+    return mb_substr($teks, 0, $maksimal) . '...';
+};
+
 $judulHalaman = $ambilKonten($kontenMap, 'judul_halaman', [
     'judul' => 'Informasi & Berita',
 ]);
@@ -141,6 +165,7 @@ $kegiatanListDefault = [
                     <?php
                     $gambar = trim((string) ($item['gambar'] ?? ''));
                     $gambar = $gambar !== '' ? $gambar : 'assets/img/informasi/kegiatan_00001.jpg';
+                    $urlDetail = $buatUrlDetail($item);
                     ?>
 
                     <article class="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
@@ -154,10 +179,10 @@ $kegiatanListDefault = [
                             </h4>
 
                             <p class="text-gray-600 text-sm leading-relaxed mb-4">
-                                <?= nl2br(esc($item['isi'] ?? '')) ?>
+                                <?= esc($ringkasTeks($item['isi'] ?? '', 140)) ?>
                             </p>
 
-                            <a href="#" class="text-az-green font-bold hover:underline">
+                            <a href="<?= esc($urlDetail, 'attr') ?>" class="text-az-green font-bold hover:underline">
                                 Baca Selengkapnya →
                             </a>
                         </div>
@@ -185,9 +210,9 @@ $kegiatanListDefault = [
                                 <?= esc($item['excerpt']) ?>
                             </p>
 
-                            <a href="#" class="text-az-green font-bold hover:underline">
-                                Baca Selengkapnya →
-                            </a>
+                            <span class="text-gray-400 font-bold">
+                                Detail belum tersedia
+                            </span>
                         </div>
                     </article>
                 <?php endforeach; ?>

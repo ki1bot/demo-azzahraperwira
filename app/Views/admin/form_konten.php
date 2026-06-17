@@ -4,6 +4,8 @@ $konten = $konten ?? null;
 $kodeHalaman = $kodeHalaman ?? '';
 $namaHalaman = $namaHalaman ?? 'Halaman';
 $halamanTetap = (bool) ($halamanTetap ?? false);
+$kodeDikunci = (bool) ($kodeDikunci ?? false);
+$tipeUpload = $tipeUpload ?? 'none';
 
 $isEdit = $mode === 'edit' && ! empty($konten);
 
@@ -27,15 +29,16 @@ $action = $isEdit
 
 $judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
 $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
+$pakaiIsiTeks = $tipeUpload !== 'file';
 ?>
 
 <div class="section-heading">
     <h2><?= esc($judulForm) ?> - <?= esc($namaHalaman) ?></h2>
 
-    <?php if ($halamanTetap): ?>
+    <?php if ($halamanTetap || $kodeDikunci): ?>
         <p>
             Halaman ini memakai kode konten tetap agar backend sesuai dengan frontend.
-            Kode konten tidak bisa diubah, hanya judul, isi, gambar, urutan, dan status yang bisa diedit.
+            Kode konten tidak bisa diubah, hanya judul, isi, media, urutan, dan status yang bisa diedit sesuai kebutuhan konten.
         </p>
     <?php else: ?>
         <p>
@@ -56,11 +59,11 @@ $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
                 class="form-control"
                 value="<?= esc($kodeValue) ?>"
                 placeholder="Contoh: hero, tentang_singkat, galeri_1"
-                <?= $halamanTetap && $isEdit ? 'readonly' : '' ?>
+                <?= $kodeDikunci && $isEdit ? 'readonly' : '' ?>
                 required
             >
 
-            <?php if ($halamanTetap && $isEdit): ?>
+            <?php if ($kodeDikunci && $isEdit): ?>
                 <div class="form-help">
                     Kode konten dikunci supaya tetap cocok dengan kode yang dipanggil di frontend.
                 </div>
@@ -107,68 +110,107 @@ $kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
             >
         </div>
 
-        <div class="form-group full">
-            <label for="isi" class="form-label">
-                <?= $kodeHalaman === 'tenaga-pengajar' ? 'Jabatan' : 'Isi' ?>
-            </label>
+        <?php if ($pakaiIsiTeks): ?>
+            <div class="form-group full">
+                <label for="isi" class="form-label">
+                    <?= $kodeHalaman === 'tenaga-pengajar' ? 'Jabatan' : 'Isi' ?>
+                </label>
 
-            <div class="editor-toolbar" data-editor-toolbar="isi">
-                <button type="button" class="btn btn-secondary btn-sm" data-format="bold">Bold</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-format="italic">Italic</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-format="underline">Underline</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-format="strike">Coret</button>
-                <button type="button" class="btn btn-secondary btn-sm" data-format="code">Kode</button>
+                <div class="editor-toolbar" data-editor-toolbar="isi">
+                    <button type="button" class="btn btn-secondary btn-sm" data-format="bold">Bold</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-format="italic">Italic</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-format="underline">Underline</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-format="strike">Coret</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-format="code">Kode</button>
+                </div>
+
+                <textarea
+                    name="isi"
+                    id="isi"
+                    class="form-control"
+                    placeholder="<?= $kodeHalaman === 'tenaga-pengajar' ? 'Contoh: Guru Tahfidz Juz 30' : 'Masukkan isi konten' ?>"
+                ><?= esc(old('isi', $konten['isi'] ?? '')) ?></textarea>
+
+                <div class="form-help">
+                    Format tanpa tag HTML:
+                    <strong>**tebal**</strong>,
+                    <em>*miring*</em>,
+                    <u>__garis bawah__</u>,
+                    <del>~~coret~~</del>,
+                    <code>`kode`</code>.
+                </div>
             </div>
+        <?php else: ?>
+            <input type="hidden" name="isi" value="<?= esc(old('isi', $konten['isi'] ?? ''), 'attr') ?>">
+        <?php endif; ?>
 
-            <textarea
-                name="isi"
-                id="isi"
-                class="form-control"
-                placeholder="<?= $kodeHalaman === 'tenaga-pengajar' ? 'Contoh: Guru Tahfidz Juz 30' : 'Masukkan isi konten' ?>"
-            ><?= esc(old('isi', $konten['isi'] ?? '')) ?></textarea>
-
-            <div class="form-help">
-                Format tanpa tag HTML:
-                <strong>**tebal**</strong>,
-                <em>*miring*</em>,
-                <u>__garis bawah__</u>,
-                <del>~~coret~~</del>,
-                <code>`kode`</code>.
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="gambar" class="form-label">Gambar</label>
-            <input
-                type="file"
-                name="gambar"
-                id="gambar"
-                class="form-control"
-                accept="image/jpeg,image/png,image/webp"
-            >
-            <div class="form-help">
-                Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="form-label">Preview Gambar Saat Ini</label>
-
-            <?php if (! empty($konten['gambar'])): ?>
-                <img
-                    src="<?= base_url($konten['gambar']) ?>"
-                    alt="<?= esc($konten['judul'] ?? 'Gambar konten') ?>"
-                    class="preview-img"
+        <?php if ($tipeUpload === 'image'): ?>
+            <div class="form-group">
+                <label for="gambar" class="form-label">Gambar</label>
+                <input
+                    type="file"
+                    name="gambar"
+                    id="gambar"
+                    class="form-control"
+                    accept="image/jpeg,image/png,image/webp"
                 >
                 <div class="form-help">
-                    Upload gambar baru hanya jika ingin mengganti gambar lama.
+                    Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.
                 </div>
-            <?php else: ?>
-                <div class="empty-state compact">
-                    <p>Belum ada gambar.</p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Preview Gambar Saat Ini</label>
+
+                <?php if (! empty($konten['gambar'])): ?>
+                    <img
+                        src="<?= base_url($konten['gambar']) ?>"
+                        alt="<?= esc($konten['judul'] ?? 'Gambar konten') ?>"
+                        class="preview-img"
+                    >
+                    <div class="form-help">
+                        Upload gambar baru hanya jika ingin mengganti gambar lama.
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state compact">
+                        <p>Belum ada gambar.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($tipeUpload === 'file'): ?>
+            <div class="form-group">
+                <label for="file_dokumen" class="form-label">File Brosur</label>
+                <input
+                    type="file"
+                    name="file_dokumen"
+                    id="file_dokumen"
+                    class="form-control"
+                    accept="application/pdf,.pdf"
+                >
+                <div class="form-help">
+                    Format: PDF. Maksimal 10 MB. Setelah upload, alamat file otomatis disimpan ke isi konten.
                 </div>
-            <?php endif; ?>
-        </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">File Saat Ini</label>
+
+                <?php if (! empty($konten['isi'])): ?>
+                    <a href="<?= base_url($konten['isi']) ?>" target="_blank" class="btn btn-secondary">
+                        Lihat File
+                    </a>
+                    <div class="form-help">
+                        Upload file baru hanya jika ingin mengganti file lama.
+                    </div>
+                <?php else: ?>
+                    <div class="empty-state compact">
+                        <p>Belum ada file.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
         <div class="form-group">
             <label for="urutan" class="form-label">Urutan</label>

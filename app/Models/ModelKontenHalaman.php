@@ -90,6 +90,14 @@ class ModelKontenHalaman extends Model
             ->getRowArray();
     }
 
+    public function satuBerdasarkanKode(string $kodeHalaman, string $kodeKonten): ?array
+    {
+        return $this->db->table($this->namaTabel($kodeHalaman))
+            ->where('kode_konten', $kodeKonten)
+            ->get()
+            ->getRowArray();
+    }
+
     public function kodeSudahAda(string $kodeHalaman, string $kodeKonten, ?int $abaikanIdKonten = null): bool
     {
         $builder = $this->db->table($this->namaTabel($kodeHalaman))

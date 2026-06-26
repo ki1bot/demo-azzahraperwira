@@ -15,6 +15,22 @@ $ambilKonten = static function (array $map, string $kode, array $fallback = []):
     ];
 };
 
+$ambilGaleri = static function (array $map, callable $ambilKonten, array $fallback): array {
+    $hasil = [];
+
+    foreach ($fallback as $kode => $dataFallback) {
+        $item = $ambilKonten($map, $kode, $dataFallback);
+
+        if (trim((string) $item['gambar']) === '') {
+            continue;
+        }
+
+        $hasil[] = $item;
+    }
+
+    return $hasil;
+};
+
 $teksTentangDefault = 'Masa usia dini adalah periode yang paling menentukan dalam kehidupan seseorang—sebuah golden age di mana setiap detik adalah kesempatan untuk menanamkan nilai-nilai kebaikan yang akan tumbuh menjadi karakter kokoh di masa depan.
 
 Di KB-TK Az-Zahra Perwira, kami tidak sekadar mengajar; kami membersamai tumbuh kembang anak-anak dalam lingkungan yang penuh dengan kasih sayang, kegembiraan, dan nilai-nilai Islami yang kental.
@@ -45,6 +61,21 @@ $fasilitas = $ambilKonten($kontenMap, 'fasilitas_unit', [
 
 $ekskul = $ambilKonten($kontenMap, 'ekstrakurikuler', [
     'judul' => 'Kegiatan Ekstrakurikuler',
+]);
+
+$galeri = $ambilGaleri($kontenMap, $ambilKonten, [
+    'galeri_1' => [
+        'judul'  => 'Drumband',
+        'gambar' => 'assets/img/unit-kb-tk/drumband.jpg',
+    ],
+    'galeri_2' => [
+        'judul'  => 'Menari',
+        'gambar' => 'assets/img/unit-kb-tk/menari.png',
+    ],
+    'galeri_3' => [
+        'judul'  => 'Kegiatan KB-TK',
+        'gambar' => 'assets/img/unit-kb-tk/kelas.png',
+    ],
 ]);
 ?>
 
@@ -141,8 +172,8 @@ $ekskul = $ambilKonten($kontenMap, 'ekstrakurikuler', [
             <?php endif; ?>
         </section>
 
-        <section class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-xl border-2 border-dashed border-az-gold min-h-64">
+        <section class="space-y-8">
+            <div class="bg-white p-8 rounded-xl border-2 border-dashed border-az-gold">
                 <h4 class="text-xl font-bold text-az-green mb-4">
                     <?= esc($ekskul['judul']) ?>
                 </h4>
@@ -161,12 +192,14 @@ $ekskul = $ambilKonten($kontenMap, 'ekstrakurikuler', [
                 <?php endif; ?>
             </div>
 
-            <div class="h-64 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                <img src="<?= base_url('assets/img/unit-kb-tk/drumband.jpg') ?>" alt="Drumband" class="w-full h-full object-cover">
-            </div>
-
-            <div class="h-64 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                <img src="<?= base_url('assets/img/unit-kb-tk/menari.png') ?>" alt="Menari" class="w-full h-full object-cover">
+            <div class="grid md:grid-cols-3 gap-8">
+                <?php foreach ($galeri as $item): ?>
+                    <div class="h-64 bg-slate-200 rounded-xl overflow-hidden shadow-md">
+                        <img src="<?= esc(base_url($item['gambar']), 'attr') ?>"
+                             alt="<?= esc($item['judul'], 'attr') ?>"
+                             class="w-full h-full object-cover">
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
     </main>

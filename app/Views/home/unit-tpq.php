@@ -15,6 +15,22 @@ $ambilKonten = static function (array $map, string $kode, array $fallback = []):
     ];
 };
 
+$ambilGaleri = static function (array $map, callable $ambilKonten, array $fallback): array {
+    $hasil = [];
+
+    foreach ($fallback as $kode => $dataFallback) {
+        $item = $ambilKonten($map, $kode, $dataFallback);
+
+        if (trim((string) $item['gambar']) === '') {
+            continue;
+        }
+
+        $hasil[] = $item;
+    }
+
+    return $hasil;
+};
+
 $tpqDefault = 'Di TPQ Az-Zahra Perwira, kami percaya bahwa pendidikan Al-Qur\'an adalah fondasi utama dalam pembentukan karakter anak. Kami berperan penting dalam pembinaan akhlak anak, membimbing mereka tidak hanya untuk pandai membaca, tetapi juga memahami dan mengamalkan nilai-nilai luhur dalam kehidupan sehari-hari.
 
 Proses pembelajaran kami dirancang dengan pendekatan yang menyentuh hati. Melalui cerita-cerita Islami yang inspiratif, nasihat yang bijak, serta pembiasaan ibadah sehari-hari, kami menanamkan nilai-nilai kebaikan seperti kejujuran, tanggung jawab, sopan santun, dan sikap saling menghormati. Kami menciptakan lingkungan belajar yang kondusif agar setiap anak merasa nyaman dalam berinteraksi dan tumbuh menjadi pribadi yang berakhlakul karimah.';
@@ -47,6 +63,21 @@ $program = $ambilKonten($kontenMap, 'program_unit', [
 
 $kegiatan = $ambilKonten($kontenMap, 'kegiatan_unit', [
     'judul' => 'Galeri Kegiatan',
+]);
+
+$galeri = $ambilGaleri($kontenMap, $ambilKonten, [
+    'galeri_1' => [
+        'judul'  => 'Wisuda RTQ',
+        'gambar' => 'assets/img/unit-tpq/tpq1.jpg',
+    ],
+    'galeri_2' => [
+        'judul'  => 'Lomba Ramadhan',
+        'gambar' => 'assets/img/unit-tpq/tpq2.jpg',
+    ],
+    'galeri_3' => [
+        'judul'  => 'Murid RTQ',
+        'gambar' => 'assets/img/unit-tpq/tpq3.jpg',
+    ],
 ]);
 ?>
 
@@ -142,24 +173,20 @@ $kegiatan = $ambilKonten($kontenMap, 'kegiatan_unit', [
             </h3>
 
             <?php if ($kegiatan['isi'] !== ''): ?>
-                <div class="bg-white p-8 rounded-2xl shadow-lg text-gray-600 leading-relaxed">
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-gray-600 leading-relaxed mb-8">
                     <?= nl2br(esc($kegiatan['isi'])) ?>
                 </div>
-            <?php else: ?>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/unit-tpq/tpq1.jpg') ?>" alt="Wisuda RTQ" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/unit-tpq/tpq2.jpg') ?>" alt="Lomba Ramadhan" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/unit-tpq/tpq3.jpg') ?>" alt="Murid RTQ" class="w-full h-full object-cover">
-                    </div>
-                </div>
             <?php endif; ?>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <?php foreach ($galeri as $item): ?>
+                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
+                        <img src="<?= esc(base_url($item['gambar']), 'attr') ?>"
+                             alt="<?= esc($item['judul'], 'attr') ?>"
+                             class="w-full h-full object-cover">
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </section>
     </main>
 </div>

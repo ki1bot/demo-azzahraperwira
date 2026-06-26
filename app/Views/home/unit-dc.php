@@ -15,6 +15,22 @@ $ambilKonten = static function (array $map, string $kode, array $fallback = []):
     ];
 };
 
+$ambilGaleri = static function (array $map, callable $ambilKonten, array $fallback): array {
+    $hasil = [];
+
+    foreach ($fallback as $kode => $dataFallback) {
+        $item = $ambilKonten($map, $kode, $dataFallback);
+
+        if (trim((string) $item['gambar']) === '') {
+            continue;
+        }
+
+        $hasil[] = $item;
+    }
+
+    return $hasil;
+};
+
 $tentangDefault = 'Di tengah dinamika kesibukan orang tua masa kini, kami hadir sebagai mitra terpercaya yang memahami bahwa setiap anak membutuhkan kasih sayang, perhatian, dan stimulasi yang tepat di usia emasnya. Daycare Az-Zahra Perwira bukan sekadar tempat penitipan; ini adalah "rumah kedua" di mana buah hati Anda tumbuh dalam lingkungan yang aman, bersih, dan sarat dengan nilai-nilai Islami.
 
 Kami menyadari bahwa memberikan kepercayaan kepada pihak lain untuk menjaga buah hati adalah keputusan besar bagi setiap orang tua. Oleh karena itu, kami menerapkan standar pelayanan yang tinggi. Setiap pengasuh kami tidak hanya terlatih dalam aspek pengasuhan, tetapi juga dibekali pemahaman mendalam tentang psikologi perkembangan anak usia dini. Kami menciptakan suasana di mana anak-anak merasa dicintai, dihargai, dan selalu ingin belajar.';
@@ -39,6 +55,21 @@ $program = $ambilKonten($kontenMap, 'program_unit', [
 
 $kegiatan = $ambilKonten($kontenMap, 'kegiatan_unit', [
     'judul' => 'Galeri Kegiatan',
+]);
+
+$galeri = $ambilGaleri($kontenMap, $ambilKonten, [
+    'galeri_1' => [
+        'judul'  => 'Galeri Daycare 1',
+        'gambar' => 'assets/img/home/home.jpg',
+    ],
+    'galeri_2' => [
+        'judul'  => 'Galeri Daycare 2',
+        'gambar' => 'assets/img/home/home1.jpg',
+    ],
+    'galeri_3' => [
+        'judul'  => 'Galeri Daycare 3',
+        'gambar' => 'assets/img/home/homedas.jpg',
+    ],
 ]);
 ?>
 
@@ -104,24 +135,20 @@ $kegiatan = $ambilKonten($kontenMap, 'kegiatan_unit', [
             </h3>
 
             <?php if ($kegiatan['isi'] !== ''): ?>
-                <div class="bg-white p-8 rounded-2xl shadow-lg text-gray-600 leading-relaxed">
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-gray-600 leading-relaxed mb-8">
                     <?= nl2br(esc($kegiatan['isi'])) ?>
                 </div>
-            <?php else: ?>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/home/home.jpg') ?>" alt="Galeri Daycare 1" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/home/home1.jpg') ?>" alt="Galeri Daycare 2" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/home/homedas.jpg') ?>" alt="Galeri Daycare 3" class="w-full h-full object-cover">
-                    </div>
-                </div>
             <?php endif; ?>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <?php foreach ($galeri as $item): ?>
+                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
+                        <img src="<?= esc(base_url($item['gambar']), 'attr') ?>"
+                             alt="<?= esc($item['judul'], 'attr') ?>"
+                             class="w-full h-full object-cover">
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </section>
     </main>
 </div>

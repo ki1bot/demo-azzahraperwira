@@ -8,6 +8,7 @@ $kodeDikunci = (bool) ($kodeDikunci ?? false);
 $tipeUpload = $tipeUpload ?? 'none';
 
 $isEdit = $mode === 'edit' && ! empty($konten);
+$isInformasi = $kodeHalaman === 'informasi';
 
 $adminFormUrl = static function (string $kodeHalaman, string $aksi, ?int $idKonten = null): string {
     $url = 'admin/' . trim($kodeHalaman, '/') . '/' . trim($aksi, '/');
@@ -156,6 +157,11 @@ $pakaiIsiTeks = $tipeUpload !== 'file';
                 >
                 <div class="form-help">
                     Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.
+                    <?php if ($isInformasi): ?>
+                        Ukuran thumbnail berita yang disarankan: 1200 x 675 px. Untuk gambar pengumuman utama: 1200 x 900 px.
+                    <?php else: ?>
+                        Ukuran gambar galeri yang disarankan: 1200 x 800 px.
+                    <?php endif; ?>
                 </div>
             </div>
 

@@ -15,6 +15,22 @@ $ambilKonten = static function (array $map, string $kode, array $fallback = []):
     ];
 };
 
+$ambilGaleri = static function (array $map, callable $ambilKonten, array $fallback): array {
+    $hasil = [];
+
+    foreach ($fallback as $kode => $dataFallback) {
+        $item = $ambilKonten($map, $kode, $dataFallback);
+
+        if (trim((string) $item['gambar']) === '') {
+            continue;
+        }
+
+        $hasil[] = $item;
+    }
+
+    return $hasil;
+};
+
 $tentangDefault = 'Masa senja adalah anugerah terindah jika diisi dengan ketenangan hati dan kedekatan dengan Sang Pencipta. Di Pondok Lansia dan Majelis Ta\'lim Az-Zahra Perwira, kami menyediakan ruang bagi para orang tua untuk menikmati masa emasnya dalam lingkungan yang penuh kekeluargaan, kesantunan, dan suasana islami yang teduh.
 
 Kami memahami bahwa di usia ini, kebutuhan akan komunitas yang suportif dan ruang untuk terus belajar agama menjadi sangat krusial. Oleh karena itu, kami menghadirkan program yang dirancang khusus untuk menjaga kesehatan jiwa, memperluas wawasan keislaman, serta mempererat tali silaturahmi antar jamaah. Di sini, setiap tawa, setiap doa, dan setiap untaian ayat Al-Qur\'an menjadi sarana untuk menjemput ridho-Nya di sisa usia yang berharga.';
@@ -39,6 +55,21 @@ $program = $ambilKonten($kontenMap, 'program_unit', [
 
 $kegiatan = $ambilKonten($kontenMap, 'kegiatan_unit', [
     'judul' => 'Galeri Kegiatan',
+]);
+
+$galeri = $ambilGaleri($kontenMap, $ambilKonten, [
+    'galeri_1' => [
+        'judul'  => 'Kegiatan Lansia 1',
+        'gambar' => 'assets/img/unit-lansia/kegiatan1.jpg',
+    ],
+    'galeri_2' => [
+        'judul'  => 'Kegiatan Lansia 2',
+        'gambar' => 'assets/img/unit-lansia/kegiatan2.jpg',
+    ],
+    'galeri_3' => [
+        'judul'  => 'Kegiatan Lansia 3',
+        'gambar' => 'assets/img/unit-lansia/kegiatan3.jpg',
+    ],
 ]);
 ?>
 
@@ -104,24 +135,20 @@ $kegiatan = $ambilKonten($kontenMap, 'kegiatan_unit', [
             </h3>
 
             <?php if ($kegiatan['isi'] !== ''): ?>
-                <div class="bg-white p-8 rounded-2xl shadow-lg text-gray-600 leading-relaxed">
+                <div class="bg-white p-8 rounded-2xl shadow-lg text-gray-600 leading-relaxed mb-8">
                     <?= nl2br(esc($kegiatan['isi'])) ?>
                 </div>
-            <?php else: ?>
-                <div class="grid md:grid-cols-3 gap-8">
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/unit-lansia/kegiatan1.jpg') ?>" alt="Kegiatan Lansia 1" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/unit-lansia/kegiatan2.jpg') ?>" alt="Kegiatan Lansia 2" class="w-full h-full object-cover">
-                    </div>
-
-                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
-                        <img src="<?= base_url('assets/img/unit-lansia/kegiatan3.jpg') ?>" alt="Kegiatan Lansia 3" class="w-full h-full object-cover">
-                    </div>
-                </div>
             <?php endif; ?>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <?php foreach ($galeri as $item): ?>
+                    <div class="h-72 bg-slate-200 rounded-xl overflow-hidden shadow-md">
+                        <img src="<?= esc(base_url($item['gambar']), 'attr') ?>"
+                             alt="<?= esc($item['judul'], 'attr') ?>"
+                             class="w-full h-full object-cover">
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </section>
     </main>
 </div>

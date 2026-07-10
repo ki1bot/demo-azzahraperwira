@@ -1,4 +1,122 @@
 services:
+  certs:
+    image: alpine:3.21
+    restart: "no"
+    volumes:
+      - mysql_tls:/mysql
+      - phpmyadmin_ca:/pma
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -eu
+
+        apk add --no-cache openssl
+
+        if [ ! -s /mysql/ca.pem ] || [ ! -s /mysql/server-cert.pem ] || [ ! -s /mysql/server-key.pem ]; then
+          rm -f /mysql/*
+
+          openssl genrsa -out /mysql/ca-key.pem 4096
+
+          openssl req \
+            -x509 \
+            -new \
+            -sha256 \
+            -days 3650 \
+            -key /mysql/ca-key.pem \
+            -out /mysql/ca.pem \
+            -subj "/CN=Azzahra MySQL Local CA" \
+            -addext "basicConstraints=critical,CA:TRUE" \
+            -addext "keyUsage=critical,keyCertSign,cRLSign" \
+            -addext "subjectKeyIdentifier=hash"
+
+          openssl genrsa -out /mysql/server-key.pem 2048
+
+          openssl req \
+            -new \
+            -sha256 \
+            -key /mysql/server-key.pem \
+            -out /mysql/server.csr \
+            -subj "/CN=db"
+
+          printf '%s\n' \
+            'basicConstraints=critical,CA:FALSE' \
+            'keyUsage=critical,digitalSignature,keyEncipherment' \
+            'extendedKeyUsage=serverAuth' \
+            'subjectKeyIdentifier=hash' \
+            'authorityKeyIdentifier=keyid,issuer' \
+            'subjectAltName=DNS:db' \
+            > /mysql/server-ext.cnf
+
+          openssl x509 \
+            -req \
+            -sha256 \
+            -days 3650 \
+            -in /mysql/server.csr \
+            -CA /mysql/ca.pem \
+            -CAkey /mysql/ca-key.pem \
+            -CAcreateserial \
+            -out /mysql/server-cert.pem \
+            -extfile /mysql/server-ext.cnf
+
+          openssl verify \
+            -CAfile /mysql/ca.pem \
+            /mysql/server-cert.pem
+
+          rm -f \
+            /mysql/ca-key.pem \
+            /mysql/ca.srl \
+            /mysql/server.csr \
+            /mysql/server-ext.cnf
+        fi
+
+        chown 999:999 \
+          /mysql/ca.pem \
+          /mysql/server-cert.pem \
+          /mysql/server-key.pem
+
+        chmod 644 \
+          /mysql/ca.pem \
+          /mysql/server-cert.pem
+
+        chmod 600 /mysql/server-key.pem
+
+        cp /mysql/ca.pem /pma/ca.pem
+        chmod 644 /pma/ca.pem
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    depends_on:
+      certs:
+        condition: service_completed_successfully
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: azzahra_perwira
+      TZ: Asia/Jakarta
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --ssl-ca=/etc/mysql/tls/ca.pem
+      - --ssl-cert=/etc/mysql/tls/server-cert.pem
+      - --ssl-key=/etc/mysql/tls/server-key.pem
+      - --tls-version=TLSv1.2,TLSv1.3
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - mysql_tls:/etc/mysql/tls:ro
+      - ./docker/mysql/01-create-local-user.sql:/docker-entrypoint-initdb.d/01-create-local-user.sql:ro
+      - ./azzahraperwira.sql:/docker-entrypoint-initdb.d/02-azzahraperwira.sql:ro
+      - ./docker/mysql/03-phpmyadmin-create-tables.sql:/docker-entrypoint-initdb.d/03-phpmyadmin-create-tables.sql:ro
+      - ./docker/mysql/04-phpmyadmin-control-user.sql:/docker-entrypoint-initdb.d/04-phpmyadmin-control-user.sql:ro
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
   app:
     build:
       context: .
@@ -16,33 +134,11 @@ services:
       db:
         condition: service_healthy
 
-  db:
-    build:
-      context: ./docker/mysql
-      dockerfile: Dockerfile
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: azzahra_perwira
-      TZ: Asia/Jakarta
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_general_ci
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./docker/mysql/01-create-local-user.sql:/docker-entrypoint-initdb.d/01-create-local-user.sql:ro
-      - ./azzahraperwira.sql:/docker-entrypoint-initdb.d/02-azzahraperwira.sql:ro
-    healthcheck:
-      test:
-        - CMD-SHELL
-        - mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD} --silent
-      interval: 5s
-      timeout: 5s
-      retries: 30
-      start_period: 30s
-
   phpmyadmin:
-    image: phpmyadmin:5-apache
+    build:
+      context: ./docker/phpmyadmin
+      dockerfile: Dockerfile
+    image: azzahraperwira-phpmyadmin:5.2.3-blueberry
     restart: unless-stopped
     ports:
       - "127.0.0.1:8081:80"
@@ -54,14 +150,29 @@ services:
       PMA_SSL: "1"
       PMA_SSL_VERIFY: "1"
       PMA_SSL_CA: /etc/phpmyadmin/ssl/ca.pem
+      PMA_CONTROLHOST: db
+      PMA_CONTROLPORT: "3306"
+      PMA_PMADB: phpmyadmin
+      PMA_CONTROLUSER: pma
+      PMA_CONTROLPASS: pma_local_password
+      PMA_QUERYHISTORYDB: "1"
+      PMA_QUERYHISTORYMAX: "100"
       UPLOAD_LIMIT: 128M
       TZ: Asia/Jakarta
     volumes:
-      - ./docker/mysql/certs/ca.pem:/etc/phpmyadmin/ssl/ca.pem:ro
+      - phpmyadmin_ca:/etc/phpmyadmin/ssl:ro
     depends_on:
+      certs:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
 
 volumes:
   mysql_data:
+    name: azzahraperwira_mysql_data
   vendor_data:
+    name: azzahraperwira_vendor_data
+  mysql_tls:
+    name: azzahraperwira_mysql_tls
+  phpmyadmin_ca:
+    name: azzahraperwira_phpmyadmin_ca

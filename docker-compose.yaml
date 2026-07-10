@@ -40,17 +40,22 @@ services:
       start_period: 30s
 
   phpmyadmin:
-    image: phpmyadmin:5
+    image: phpmyadmin:5-apache
     restart: unless-stopped
     ports:
       - "127.0.0.1:8081:80"
     environment:
       PMA_HOST: db
-      PMA_PORT: 3306
+      PMA_PORT: "3306"
       PMA_USER: root
       PMA_PASSWORD: root
+      PMA_SSL: "1"
+      PMA_SSL_VERIFY: "1"
+      PMA_SSL_CA: /etc/phpmyadmin/ssl/ca.pem
       UPLOAD_LIMIT: 128M
       TZ: Asia/Jakarta
+    volumes:
+      - ./docker/mysql/certs/ca.pem:/etc/phpmyadmin/ssl/ca.pem:ro
     depends_on:
       db:
         condition: service_healthy

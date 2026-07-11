@@ -1,4 +1,5 @@
 <?php
+
 $mode = $mode ?? 'tambah';
 $konten = $konten ?? null;
 $kodeHalaman = $kodeHalaman ?? '';
@@ -10,8 +11,15 @@ $tipeUpload = $tipeUpload ?? 'none';
 $isEdit = $mode === 'edit' && ! empty($konten);
 $isInformasi = $kodeHalaman === 'informasi';
 
-$adminFormUrl = static function (string $kodeHalaman, string $aksi, ?int $idKonten = null): string {
-    $url = 'admin/' . trim($kodeHalaman, '/') . '/' . trim($aksi, '/');
+$adminFormUrl = static function (
+    string $kodeHalaman,
+    string $aksi,
+    ?int $idKonten = null
+): string {
+    $url = 'admin/'
+        . trim($kodeHalaman, '/')
+        . '/'
+        . trim($aksi, '/');
 
     if ($idKonten !== null) {
         $url .= '/' . $idKonten;
@@ -20,45 +28,82 @@ $adminFormUrl = static function (string $kodeHalaman, string $aksi, ?int $idKont
     return base_url($url . '/index.php');
 };
 
-$adminIndexUrl = static function (string $kodeHalaman): string {
-    return base_url('admin/' . trim($kodeHalaman, '/') . '/index.php');
+$adminIndexUrl = static function (
+    string $kodeHalaman
+): string {
+    return base_url(
+        'admin/'
+        . trim($kodeHalaman, '/')
+        . '/index.php'
+    );
 };
 
 $action = $isEdit
-    ? $adminFormUrl($kodeHalaman, 'update', (int) ($konten['id_konten'] ?? 0))
-    : $adminFormUrl($kodeHalaman, 'simpan');
+    ? $adminFormUrl(
+        $kodeHalaman,
+        'update',
+        (int) ($konten['id_konten'] ?? 0)
+    )
+    : $adminFormUrl(
+        $kodeHalaman,
+        'simpan'
+    );
 
-$judulForm = $isEdit ? 'Edit Konten' : 'Tambah Konten';
-$kodeValue = old('kode_konten', $konten['kode_konten'] ?? '');
+$judulForm = $isEdit
+    ? 'Edit Konten'
+    : 'Tambah Konten';
+
+$kodeValue = old(
+    'kode_konten',
+    $konten['kode_konten'] ?? ''
+);
+
 $pakaiIsiTeks = $tipeUpload !== 'file';
 ?>
 
 <div class="section-heading">
-    <h2><?= esc($judulForm) ?> - <?= esc($namaHalaman) ?></h2>
+    <h2>
+        <?= esc($judulForm) ?>
+        -
+        <?= esc($namaHalaman) ?>
+    </h2>
 
     <?php if ($halamanTetap || $kodeDikunci): ?>
         <p>
-            Halaman ini memakai kode konten tetap agar backend sesuai dengan frontend.
-            Kode konten tidak bisa diubah, hanya judul, isi, media, urutan, dan status yang bisa diedit sesuai kebutuhan konten.
+            Halaman ini memakai kode konten tetap agar backend sesuai
+            dengan frontend. Kode konten tidak bisa diubah, hanya judul,
+            isi, media, urutan, dan status yang bisa diedit sesuai
+            kebutuhan konten.
         </p>
     <?php else: ?>
         <p>
-            Isi data konten dengan benar. Untuk format teks, gunakan tombol format atau ketik format teks biasa tanpa tag HTML.
+            Isi data konten dengan benar. Untuk format teks, gunakan
+            tombol format atau ketik format teks biasa tanpa tag HTML.
         </p>
     <?php endif; ?>
 </div>
 
-<form action="<?= $action ?>" method="post" enctype="multipart/form-data" class="admin-form">
+<form
+    action="<?= esc($action, 'attr') ?>"
+    method="post"
+    enctype="multipart/form-data"
+    class="admin-form"
+>
     <div class="form-grid">
         <div class="form-group">
-            <label for="kode_konten" class="form-label">Kode Konten</label>
+            <label
+                for="kode_konten"
+                class="form-label"
+            >
+                Kode Konten
+            </label>
 
             <input
                 type="text"
                 name="kode_konten"
                 id="kode_konten"
                 class="form-control"
-                value="<?= esc($kodeValue) ?>"
+                value="<?= esc($kodeValue, 'attr') ?>"
                 placeholder="Contoh: hero, tentang_singkat, galeri_1"
                 <?= $kodeDikunci && $isEdit ? 'readonly' : '' ?>
                 required
@@ -66,71 +111,167 @@ $pakaiIsiTeks = $tipeUpload !== 'file';
 
             <?php if ($kodeDikunci && $isEdit): ?>
                 <div class="form-help">
-                    Kode konten dikunci supaya tetap cocok dengan kode yang dipanggil di frontend.
+                    Kode konten dikunci supaya tetap cocok dengan kode
+                    yang dipanggil di frontend.
                 </div>
             <?php endif; ?>
         </div>
 
         <?php if ($kodeHalaman === 'tenaga-pengajar'): ?>
             <div class="form-group">
-                <label for="kategori" class="form-label">Kategori Pengajar</label>
+                <label
+                    for="kategori"
+                    class="form-label"
+                >
+                    Kategori Pengajar
+                </label>
+
                 <input
                     type="text"
                     name="kategori"
                     id="kategori"
                     class="form-control"
-                    value="<?= esc(old('kategori', $konten['kategori'] ?? '')) ?>"
+                    value="<?= esc(
+                        old(
+                            'kategori',
+                            $konten['kategori'] ?? ''
+                        ),
+                        'attr'
+                    ) ?>"
                     placeholder="Contoh: Pendidik Rumah Quran (RTQ)"
                 >
             </div>
 
             <div class="form-group">
-                <label for="pendidikan" class="form-label">Pendidikan / Lulusan</label>
+                <label
+                    for="pendidikan"
+                    class="form-label"
+                >
+                    Pendidikan / Lulusan
+                </label>
+
                 <input
                     type="text"
                     name="pendidikan"
                     id="pendidikan"
                     class="form-control"
-                    value="<?= esc(old('pendidikan', $konten['pendidikan'] ?? '')) ?>"
+                    value="<?= esc(
+                        old(
+                            'pendidikan',
+                            $konten['pendidikan'] ?? ''
+                        ),
+                        'attr'
+                    ) ?>"
                     placeholder="Contoh: S1, S2, D2, Madrasah A’liyah"
                 >
             </div>
         <?php endif; ?>
 
         <div class="form-group">
-            <label for="judul" class="form-label">
-                <?= $kodeHalaman === 'tenaga-pengajar' ? 'Nama Pengajar' : 'Judul' ?>
+            <label
+                for="judul"
+                class="form-label"
+            >
+                <?= $kodeHalaman === 'tenaga-pengajar'
+                    ? 'Nama Pengajar'
+                    : 'Judul'
+                ?>
             </label>
+
             <input
                 type="text"
                 name="judul"
                 id="judul"
                 class="form-control"
-                value="<?= esc(old('judul', $konten['judul'] ?? '')) ?>"
-                placeholder="<?= $kodeHalaman === 'tenaga-pengajar' ? 'Masukkan nama pengajar' : 'Masukkan judul konten' ?>"
+                value="<?= esc(
+                    old(
+                        'judul',
+                        $konten['judul'] ?? ''
+                    ),
+                    'attr'
+                ) ?>"
+                placeholder="<?= esc(
+                    $kodeHalaman === 'tenaga-pengajar'
+                        ? 'Masukkan nama pengajar'
+                        : 'Masukkan judul konten',
+                    'attr'
+                ) ?>"
             >
         </div>
 
         <?php if ($pakaiIsiTeks): ?>
             <div class="form-group full">
-                <label for="isi" class="form-label">
-                    <?= $kodeHalaman === 'tenaga-pengajar' ? 'Jabatan' : 'Isi' ?>
+                <label
+                    for="isi"
+                    class="form-label"
+                >
+                    <?= $kodeHalaman === 'tenaga-pengajar'
+                        ? 'Jabatan'
+                        : 'Isi'
+                    ?>
                 </label>
 
-                <div class="editor-toolbar" data-editor-toolbar="isi">
-                    <button type="button" class="btn btn-secondary btn-sm" data-format="bold">Bold</button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-format="italic">Italic</button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-format="underline">Underline</button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-format="strike">Coret</button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-format="code">Kode</button>
+                <div
+                    class="editor-toolbar"
+                    data-editor-toolbar="isi"
+                >
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-format="bold"
+                    >
+                        Bold
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-format="italic"
+                    >
+                        Italic
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-format="underline"
+                    >
+                        Underline
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-format="strike"
+                    >
+                        Coret
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary btn-sm"
+                        data-format="code"
+                    >
+                        Kode
+                    </button>
                 </div>
 
                 <textarea
                     name="isi"
                     id="isi"
                     class="form-control"
-                    placeholder="<?= $kodeHalaman === 'tenaga-pengajar' ? 'Contoh: Guru Tahfidz Juz 30' : 'Masukkan isi konten' ?>"
-                ><?= esc(old('isi', $konten['isi'] ?? '')) ?></textarea>
+                    placeholder="<?= esc(
+                        $kodeHalaman === 'tenaga-pengajar'
+                            ? 'Contoh: Guru Tahfidz Juz 30'
+                            : 'Masukkan isi konten',
+                        'attr'
+                    ) ?>"
+                ><?= esc(
+                    old(
+                        'isi',
+                        $konten['isi'] ?? ''
+                    )
+                ) ?></textarea>
 
                 <div class="form-help">
                     Format tanpa tag HTML:
@@ -142,40 +283,70 @@ $pakaiIsiTeks = $tipeUpload !== 'file';
                 </div>
             </div>
         <?php else: ?>
-            <input type="hidden" name="isi" value="<?= esc(old('isi', $konten['isi'] ?? ''), 'attr') ?>">
+            <input
+                type="hidden"
+                name="isi"
+                value="<?= esc(
+                    old(
+                        'isi',
+                        $konten['isi'] ?? ''
+                    ),
+                    'attr'
+                ) ?>"
+            >
         <?php endif; ?>
 
         <?php if ($tipeUpload === 'image'): ?>
             <div class="form-group">
-                <label for="gambar" class="form-label">Gambar</label>
+                <label
+                    for="gambar"
+                    class="form-label"
+                >
+                    Gambar
+                </label>
+
                 <input
                     type="file"
                     name="gambar"
                     id="gambar"
                     class="form-control"
-                    accept="image/jpeg,image/png,image/webp"
+                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
                 >
+
                 <div class="form-help">
-                    Format: JPG, JPEG, PNG, WEBP. Maksimal 2 MB.
-                    <?php if ($isInformasi): ?>
-                        Ukuran thumbnail berita yang disarankan: 1200 x 675 px. Untuk gambar pengumuman utama: 1200 x 900 px.
-                    <?php else: ?>
-                        Ukuran gambar galeri yang disarankan: 1200 x 800 px.
-                    <?php endif; ?>
+                    Format yang diizinkan hanya JPG/JPEG atau PNG.
+                    Ukuran maksimal upload gambar adalah 5 MB.
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Preview Gambar Saat Ini</label>
+                <label class="form-label">
+                    Preview Gambar Saat Ini
+                </label>
 
                 <?php if (! empty($konten['gambar'])): ?>
                     <img
-                        src="<?= base_url($konten['gambar']) ?>"
-                        alt="<?= esc($konten['judul'] ?? 'Gambar konten') ?>"
+                        src="<?= esc(
+                            base_url($konten['gambar']),
+                            'attr'
+                        ) ?>"
+                        alt="<?= esc(
+                            $konten['judul'] ?? 'Gambar konten',
+                            'attr'
+                        ) ?>"
                         class="preview-img"
+                        style="
+                            width: auto;
+                            max-width: 100%;
+                            height: auto;
+                            max-height: 480px;
+                            object-fit: contain;
+                        "
                     >
+
                     <div class="form-help">
-                        Upload gambar baru hanya jika ingin mengganti gambar lama.
+                        Upload gambar baru hanya jika ingin mengganti
+                        gambar lama.
                     </div>
                 <?php else: ?>
                     <div class="empty-state compact">
@@ -187,7 +358,13 @@ $pakaiIsiTeks = $tipeUpload !== 'file';
 
         <?php if ($tipeUpload === 'file'): ?>
             <div class="form-group">
-                <label for="file_dokumen" class="form-label">File Brosur</label>
+                <label
+                    for="file_dokumen"
+                    class="form-label"
+                >
+                    File Brosur
+                </label>
+
                 <input
                     type="file"
                     name="file_dokumen"
@@ -195,20 +372,34 @@ $pakaiIsiTeks = $tipeUpload !== 'file';
                     class="form-control"
                     accept="application/pdf,.pdf"
                 >
+
                 <div class="form-help">
-                    Format: PDF. Maksimal 10 MB. Setelah upload, alamat file otomatis disimpan ke isi konten.
+                    Format: PDF. Maksimal 10 MB. Setelah upload, alamat
+                    file otomatis disimpan ke isi konten.
                 </div>
             </div>
 
             <div class="form-group">
-                <label class="form-label">File Saat Ini</label>
+                <label class="form-label">
+                    File Saat Ini
+                </label>
 
                 <?php if (! empty($konten['isi'])): ?>
-                    <a href="<?= base_url($konten['isi']) ?>" target="_blank" class="btn btn-secondary">
+                    <a
+                        href="<?= esc(
+                            base_url($konten['isi']),
+                            'attr'
+                        ) ?>"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-secondary"
+                    >
                         Lihat File
                     </a>
+
                     <div class="form-help">
-                        Upload file baru hanya jika ingin mengganti file lama.
+                        Upload file baru hanya jika ingin mengganti
+                        file lama.
                     </div>
                 <?php else: ?>
                     <div class="empty-state compact">
@@ -219,35 +410,88 @@ $pakaiIsiTeks = $tipeUpload !== 'file';
         <?php endif; ?>
 
         <div class="form-group">
-            <label for="urutan" class="form-label">Urutan</label>
+            <label
+                for="urutan"
+                class="form-label"
+            >
+                Urutan
+            </label>
+
             <input
                 type="number"
                 name="urutan"
                 id="urutan"
                 class="form-control"
-                value="<?= esc(old('urutan', $konten['urutan'] ?? 0)) ?>"
+                value="<?= esc(
+                    old(
+                        'urutan',
+                        $konten['urutan'] ?? 0
+                    ),
+                    'attr'
+                ) ?>"
                 min="0"
             >
         </div>
 
         <div class="form-group">
-            <label for="status" class="form-label">Status</label>
+            <label
+                for="status"
+                class="form-label"
+            >
+                Status
+            </label>
 
-            <?php $status = old('status', $konten['status'] ?? 'aktif'); ?>
+            <?php
+            $status = old(
+                'status',
+                $konten['status'] ?? 'aktif'
+            );
+            ?>
 
-            <select name="status" id="status" class="form-control" required>
-                <option value="aktif" <?= $status === 'aktif' ? 'selected' : '' ?>>Aktif</option>
-                <option value="nonaktif" <?= $status === 'nonaktif' ? 'selected' : '' ?>>Nonaktif</option>
+            <select
+                name="status"
+                id="status"
+                class="form-control"
+                required
+            >
+                <option
+                    value="aktif"
+                    <?= $status === 'aktif'
+                        ? 'selected'
+                        : ''
+                    ?>
+                >
+                    Aktif
+                </option>
+
+                <option
+                    value="nonaktif"
+                    <?= $status === 'nonaktif'
+                        ? 'selected'
+                        : ''
+                    ?>
+                >
+                    Nonaktif
+                </option>
             </select>
         </div>
     </div>
 
     <div class="form-actions">
-        <a href="<?= $adminIndexUrl($kodeHalaman) ?>" class="btn btn-secondary">
+        <a
+            href="<?= esc(
+                $adminIndexUrl($kodeHalaman),
+                'attr'
+            ) ?>"
+            class="btn btn-secondary"
+        >
             Kembali
         </a>
 
-        <button type="submit" class="btn btn-primary">
+        <button
+            type="submit"
+            class="btn btn-primary"
+        >
             Simpan
         </button>
     </div>

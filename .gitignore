@@ -23,7 +23,6 @@
 *.sqlite
 *.sqlite3
 *.db
-# azzahraperwira.sql
 
 # LOG FILES
 *.log
